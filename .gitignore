@@ -1,5 +1,16 @@
+# pdf
+organic_chemistry.pdf
+
 # LaTeX
 *.aux
 *.fdb_latexmk
 *.fls
 *.log
+*eps-converted-to.pdf
+*synctex.gz
+
+# editors
+.vscode
+
+# macos
+.DS_Store
