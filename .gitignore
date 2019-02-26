@@ -6,6 +6,7 @@ organic_chemistry.pdf
 *.fdb_latexmk
 *.fls
 *.log
+*.toc
 *eps-converted-to.pdf
 *synctex.gz
 
