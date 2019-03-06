@@ -1,0 +1,15 @@
+\section{Chemistry and Graph Theory}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Graph Theory in Chemistry}
+
+A \emph{graph} $\graph$ is a collection of objects $V(\graph)$ called \emph{nodes} (or \emph{vertices}) and the relationships $E(\graph)$ between them called \emph{edges} (or \emph{arcs}). In the context of chemoinformatics the nodes are the atoms constituting a molecule and the edges are the bonds between them.
+
+The nodes in $\graph$ are \emph{connected} if there is an edge $(v_i, v_j) \in E(\graph)$ such that  $v_i \in V(\graph)$ and $v_j \in V(\graph)$. The \emph{order} of the graph $\graph$ is given by the number of elements in $V(\graph)$, $\abs{V(\graph)}$. A node $v_i \in V(\graph)$ is \emph{incident} with an edge if that edge is connected to the node, while two nodes $v_i, v_j \in V(\graph)$ are \emph{adjacent} if they are connected by the edge $(v_i, v_j) \in E(\graph)$. Two edges are said to be incident if they are connected to the same node.
+
+A \emph{complete graph} is a graph where every node is connected to every other node.
+
+One of the most important applications in chemoinformatics is that of graph-matching problems. Two graphs are said to be \emph{isomorphic} when they are structurally identical. Subgraph isomorphism of $\graph_1, \graph_2$ holds if $\graph_1$ is isomorphic to some subgraph of $\graph_2$ or vice versa.
+
+The \emph{molecular graph} is a graph that is undirected and where the vertex are coloured (by atom type) and the edges are weighted (by bond order: single, double, triple or aromatic). Hydrogens are usually implicitly represented in a molecular graph as they are assumed to fill the unused valences of each of the atom in the molecule.

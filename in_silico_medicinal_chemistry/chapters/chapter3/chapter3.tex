@@ -1,0 +1,76 @@
+\newcommand*{\path3}{chapters/chapter3}
+
+\section{Structure Representation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Overview}
+
+Any computational manipulation of molecules requires a defined encoding scheme that allows the input of the molecular structure into the computer in a machine-readable form. The simplest molecular representation is a list describing the atoms composing a molecule and how the bonds connect those atoms (hydrogen atoms are accounted for implicitly).
+
+Small discrepancies between programs may lead to an inability to read files generated in one system in another current system.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The Need for Machine-Readable Structure Representations}
+
+Systematic names were developed by the International Union of pure and applied Chemistry (IUpaC) to provide standard naming conventions for chemical structures. Systematic names become quickly very complicated, however chemical information systems can usually encode and decode them according to the naming conventions.
+
+Chemical structures are the explicit representation and the chemist’s \emph{lingua franca}. Although chemists can easily understand a chemical structure picture, it is more difficult for a computer to process the graphical information into a chemical structure representation.
+
+\key{There are multiple machine-readable structure representation systems.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Adjacency Matrix}
+
+The adjacency matrix (AM) is possibly the simplest computer-readable representation for molecules. It is often used as in-memory representation, since it gives rapid access to the connectivity of a given molecules.
+
+Given a molecule composed of $n$ atoms, the adjacency matrix is a square $n \times n$ matrix that define the bonding between each atom. A series of arrays with $n$ elements is usually associated to an AM to encode atom properties (usually atom types, coordinates, \dots). Because of its symmetry, the AM is redundant.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Connection Table}
+
+A connection table (CT) consists of lines of information regarding the atoms in a particular molecule (elemental type, and $xyz$ coordinates, \dots). In addition to the lined describing the atoms, bond block encodes the connections between each of the atoms (usually according to an index).
+
+\subsubsection*{The Molfile format}
+
+The Molfile (\code{.mol}) is split into distinct lines of information, called blocks. The first three lines contain general information.
+
+The fourth line contains metadata regarding the CT and allows to identify the number of atoms and bond in the molecule.
+
+The atom block contains information about the atoms, one atom per line. In one line, $xyz$ coordinates are followed by the elemental atom type and 12 atom property fields that depend on the software used.
+
+In the bond block, every bond is described on a line. The first two values in each bond line contain the indices of the bonded atoms (indices given implicitly by the atom position within the atom block). The following digit encodes the bonding order or type (single bond, double bond, \dots). The subsequent four bond property fields can encode for different properties, depending on the software used.
+
+\subsubsection*{The SDF format}
+
+The SDF format wraps and extends the Molfile format and has the following advantages:
+\begin{itemize}
+    \item incorporation of additional metadata,
+    \item encoding multiple chemical structures.
+\end{itemize}
+
+In the SDF format, additional data is included by first defining the field name on a single line according to the following format: \code{><FIELDNAME>}. This is followed by a single line containing the actual field data.
+
+The SDF format can contain multiple molecules. The record delimited in the SDF format is simply an additional line containing four dollar signs (\code{\$\$\$\$})
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Line Notations}
+
+Line notations tend to offer a compact representation of the constitution and connectivity of a topological representation of chemical structures, but they lack of additional information (protonation, geometry, \dots). They are particularly suited for spreadsheets or rudimentary databases.
+
+The linearisation of molecular structures means that one structure may have many different line notations in the same encoding scheme. Fortunately, unambiguous representations can be obtained and nowadays the Morgan algorithm is the \emph{de facto standard} for structure canonicalisation.
+
+\subsubsection*{SMILES: Simplified Molecular-Input Line-Entry Specification}
+
+The SMILES representation uses alphanumeric characters that closely mimic atoms and bonds as drawn in two-dimensional chemical structures.
+
+Atoms are represented by their elemental symbol in the periodic table, within square brackets (which can be implicit for the organic subset of elements). Hydrogen atoms are usually implicit. A charged atom has to be enclosed within square brackets followed by the \ce{H} symbol and number of hydrogens bonded to it. Following this, a plus symbol represents a positive charge and a subtraction symbol represents a negative charge (the number of charges can be included after the charge symbol). 
+
+Bonds are represented by symbols that mimic the chem- ical structure diagram representations: a single bond is \code{-}; a double bond is \code{=}; a triple bond is \code{\#}; a quadruple bond is \code{\$}; and an aromatic bond is \code{:}.
+
+\marginnote{Cyclohexane is \code{C1CCCCC1} while benzene is \code{c1ccccc1} (\code{c} represents an aromatic carbon).}[0cm] 
+Branching is defined by round brackets. Ring systems are encoded by ring closure tags, which indicate that two atoms in the string are connected. Aromaticity is encoded by using the lower-case characters for carbon, nitrogen, oxygen, and sulphur (aromatic bonds are implied between aromatic atoms). Stereochemistry is encoded by the special characters: \code{\mybackslash}, \code{/}, \code{@} and \code{@@}.
