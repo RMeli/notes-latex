@@ -1,0 +1,60 @@
+\newcommand*{\path5}{chapters/chapter5}
+
+\section{Molecular Property Descriptors}
+
+Molecular and physicochemical descriptors are very important in drug discovery.
+
+%%%%%%%%%%%%%%%%%%%%%
+\subsection{Molecular Weight (MW or MWt)}
+
+The molecular weight (MW) is simply the sum of the masses of every heavy atom constituting the molecule (hydrogen is excluded). It is therefore easy to compute and very precise.
+
+Large molecules have higher chances of containing undesirable moieties, therefore many drugs usually have a small molecular weight.
+
+MW is used to compute the \emph{binding efficiency index}, which is the potency normalized by the MW. Added atoms should have a positive effect on the potency and not just increase the MW.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Octanol/Water Partition Coefficient (C$\log P$)}
+
+The $\log P$ descriptor is widely used and is defined as the logarithm of the concentrations of a compound in two liquid phases (typically octanol and water):
+\[
+    \log P = \log \left(
+        \frac{[\text{solute}]_{\ce{C8H18O}}}{[\text{solute}]_{\ce{H2O}}}
+    \right)
+\]
+
+The $\log P$ coefficient indicates if a molecule is hydrophilic or hydrophobic, which affect the ADME (administration, absorption, transport and excretion) of such compound.
+
+When $\log P$ is calculated instead of measured, it is usually called C$\log P$, but the method with which it has been computed should always be specified.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Topological Polar Surface Area (TPSA)}
+
+The polar surface area (PSA) is the sum of the surface area of all polar atoms in a molecule (including connected hydrogens) and indicates the cell permeability of a molecule or its permeability of the blood–brain barrier (BBB).
+
+The PSA can be computed from the 3D structure of the molecule, but this is computationally expensive. Therefore a topological method to compute the PSA has been developed, called topological PSA (TPSA).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Hydrogen Bond Acceptors and Donors (HBA and HBD)}
+
+A H-bond donor (HBD) is an lone pair acceptor, while a H-bond acceptor (HBA) is an lone-pair donor. HDA and HBD depend on the context of the atoms in the molecule and the pH ($pK_a$).
+
+For simplicity, HBD is the sum of \ce{N-H} and \ce{OH} bonds while HBA is the sum of all nitrogen and oxygen atom.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Lipinski’s Rule-of-Five}
+
+The majority of oral drugs are small and moderately lipophilic. Lipinski rule-of-five is an heuristic rule for \emph{druglikeness} (or oral \emph{bioavailability}):
+\begin{itemize}
+    \item Moleculear mass less than 500 Daltons
+    \item $log P$ smaller than 5
+    \item Maximum 5 HBD
+    \item Maximum 10 HBA
+\end{itemize}
+
+The number of rotatable bonds (the sum of acyclic single bonds) is preferred to be smaller than 10.
+
