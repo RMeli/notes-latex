@@ -1,3 +1,70 @@
 \newcommand*{\path4}{chapters/chapter4}
 
 \section{Molecular Similarity}
+
+The \emph{similar property principle} is a concept that defines that, if two ligands are similar, they will also tend to have similar properties. When the similar-property principle does break down, the effect is often referred to as an \emph{activity cliff}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Molecular Similarity}
+
+The concept of molecular similarity is highly subjective, even philosophical in nature.
+
+Molecular similarity may be considered in terms of the connectivity of the atoms, which is called \emph{topological similarity}. Similar topological structures sit close in chemical space, allowing to explore the structure–activity relationship (SAR) of chemical structures around a given chemotype or molecular scaffold.
+
+\emph{Property similarity} is an approach to molecular similarity in which the chemical properties define the similarity of two given molecules.
+
+Topological similarity is an effective measure of structural similarity between two molecules. However, the actual shape of the molecule is very important in drug design, since it is often desirable to minimize the entropic penalty upon binding. Considering the actual shape of the molecule introduce an additional complication, known as the conformer problem: the different shapes that the molecule may adopt should be explicitly considered (thus increasing the number of comparisons needed to identify similarity).
+
+\emph{Pharmacophore} can be also used to asses molecular similarity. A pharmacophore is the hypothetical or known requirements for a molecule to interact with its protein target binding site. It is therefore an abstract model defining the necessary functional binding elements.
+
+\emph{Biological similarity} occurs when two (or more) structurally unrelated ligands act on their target in a similar way. In drug discovery it is often very useful to have biological similarity in two different chemical series since late-stage attrition might lead to one of the series to fail (because of toxicity, off-target effects, \dots). Having different molecules acting on the same target and producing the same effect is also useful to elucidate the function and effects of the target of interest.
+
+Topological similarity highlights structures that are significantly similar in appearance. Property similar can lead to identifying very diverse structures that share the same properties. Pharmacophoric similarity can be calculated from both topological and geometric structures and encode the feature points that are likely to contribute positively to binding (the pharmacophors). Biological similarity, which is simply the difference between the biological endpoints of interest.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Similarity Principle}
+
+\key{The similar property principle states that chemical structures that are highly structurally similar will tend to exhibit similar properties.}
+
+While the similar property is straightforward and intuitive in concept, it is merely a concept and therefore qualitative at best.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Molecular Descriptors}
+
+Molecular similarity is often calculated from molecular descriptors, rather than the actual molecular structures. Many different molecular descriptors exist and have been developed for different motivations.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Calculation of Molecular Similarity}
+
+\subsubsection*{Similarity Coefficients}
+
+A graph-based calculation of similarity of two chemical structures can be too computationally expensive. Therefore, molecular similarity is often computed on molecular descriptors that somehow encode the chemical structure. Often, binary molecular fingerprints are used and the similarity between two fingerprints is quantified in terms of similarity coefficients.
+
+The Tanimoto (or Jaccard) coefficient is an association coefficient usually considered with binary data. Normaly it spans the range $[0,1]$ (where zero indicates no similarity, while one indicates complete identity).
+
+Different fingerprints can give vastly different similarity values, mainly due to the numbers of bits set (in fingerprints) or non-zero variables (in continuous data).
+
+Both the similarity coefficient and the molecular descriptor (or fingerprint) greatly affect the level of similarity between two molecules. Therefore one should proceed with care when performing molecular similarity comparisons.
+
+The conditions that a similarity coefficient $d(x,y)$ (between $x$ and $y$) has to satisfy to be referred to as a metric are the following:
+\begin{itemize}
+    \item Non-negativity: $d(x,y) \geq 0)$
+    \item Identity of discernibles: $d(x,y) = 0 \iff x = y$
+    \item Symmetry: $d(x,y) = d(y,x)$
+    \item Triangle inequality: $d(x,z) \leq d(x,y) + d(y,z)$
+\end{itemize}
+The Euclidean, Hamming and Soergel distances fulfil these conditions.
+
+The Tanimoto coefficient is by far the most widely used coefficient in molecular similarity search.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Molecular Diversity}
+
+Molecular diversity (or \emph{dissimilarity}) is also a key concept in drug design. Molecular diversity methods can be applied to represent a high diversity in chemical space with a small number of structures.
+
+A set representing the distribution of the chemical matter over the chemistry space better than a random sampling is useful when a greater exploration of chemical space with fewer structures is desirable.
