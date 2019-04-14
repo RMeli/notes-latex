@@ -2,6 +2,97 @@
 
 \section{Topological Descriptors}
 
+Topological descriptor are based exclusively on the molecular graph, therefore are unbiased. Most are fast to compute.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Topological Indices (TIs)}
+
+Topological indices (or graph theoretic invariants) are a single value characterizing the molecular graph.
+
+\subsubsection*{Wiener Index}
+
+The path number (or Wiener index) is defined by
+\[
+    W = \frac{1}{2} \sum_{ij} d_{ij},
+\]
+where $d_{ij}$ is the total distance (in terms of bonds) of the shortest path between two carbons $i$ and $j$.
+
+
+\subsubsection*{Randic Index}
+
+\marginnote{The degree (or valency) of a vertex is the number of edges incident to the vertex.}[0cm]
+
+The connectivity index (or Randic index) is defined by
+\[
+    C(\graph) = \sum_{ij} \frac{1}{\sqrt{\text{deg}_i - \text{deg}_j}},
+\]
+where $\text{deg}_i$ and $\text{deg}_j$ are degrees of atoms $i$ and $j$, connected by a bond.
+
+The Randic index correlates with a number of physical and chemical properties.
+
+
+\subsubsection*{Petitjean Index}
+
+The \emph{eccentricity} of an atom in a molecular graph is longest path between said atom and any other atom. If $R$ is smallest eccentricity (the radius) and $D$ is the largest eccentricity (the diameter), Petitjean index is defined as
+\[
+    I = \frac{D - R}{R}.
+\]
+
+
+\subsubsection*{Zagreb Indices}
+
+The first Zagreb index, called M1, is 
+\[
+    \text{M1} = \sum_{i} \text{deg}_i^2,
+\]
+where the sum is over all atoms in the molecule. The second Zagreb index, called M2, is
+\[
+    \text{M2} = \sum_{i}\prod_{j \in \text{adj}(i)} \text{deg}_j^2,
+\]
+where $\text{adj}(i)$ is the set of atoms adjacent to $i$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Molecular Fingerprints}
+
+It's impossible to encode a lot of information about a molecule in a single number, therefore TIs have limited applications. Molecular fingerprints---transformation of the molecular graph in a string of variables---can encode much more information.
+
+There are two common classes of molecular fingerprints:
+\begin{itemize}
+    \item Knowledge-based (structure-key) fingerprints 
+    \item Information-based (hash-key) fingerprints 
+\end{itemize}
+
+
+\subsubsection*{Structure-Key Fingerprints}
+
+\marginnote{\emph{Moiety}: part of a molecule, larger than functional groups.}[0cm]
+
+A structure-key fingerprint encodes known molecular structure moieties and are based on a pre-defined collection of molecular substructures. They do not perform well on chemicals with new moieties.
+
+
+\subsubsection*{Hash-Key Fingerprints}
+
+%\marginnote{An hash collision occurs when two different inputs of an hash function produce identical outputs}[0cm]
+
+Hash-key fingerprints try to encode the whole molecular graph, instead of using structure moieties and therefore they are usually more powerful than structure-key fingerprints. However, hashing the molecular graph can lead to collisions.
+
+Hash-key fingerprints were originally developed for rapid screening of molecules for substructure searches. The substructure is encoded in a fingerprint and screened against a database; the structures in the database containing the fingerprint are then passed to the substructure search algorithm.
+
+The following are the most common hash-key fingerprints:
+\begin{itemize}
+    \item Fingal fingerprints,
+    \item Morgan fingerprints.
+\end{itemize}
+
+The Morgan fingerprint has a much narrower distribution of similarities (between fingerprints) compared to the broader distribution observed for the Fingal fingerprint.
+
+\subsubsection*{Ligand-Based Topological Pharmacophores}
+
+Ligand-based topological pharmacophores uses through-graph distance to mimic the 3D arrangement of atoms in a molecule.
+
+The following are the most common ligand-based topological pharmacophore:
+\begin{itemize}
+    \item CATS vectors,
+    \item Hopfen fingerprints.
+\end{itemize}
