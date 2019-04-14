@@ -1,0 +1,91 @@
+\newcommand*{\path7}{chapters/chapter7}
+
+\section{Topographical Descriptors}
+
+Physicochemical and topological descriptors have limitations since they don't take into account the three-dimensional structure of molecules.
+Binding sites exists in three dimensions, therefore the shape complementarity between the binding site and a molecule is important in order to create molecular interactions. 
+Topographical (or molecular shape) descriptors should account for the interplay between molecular interactions and three dimensional structure.
+
+The similarity principle also apply to the three-dimensional shape of molecules.
+The fact that molecules can change shape over time and assume different conformations poses complications on the use of topographical descriptors and is known as the conformer problem.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Topographical Descriptors}
+
+Geometric descriptor can be computed from atomic coordinates.
+There are thw types of geometric descriptors:
+\begin{itemize}
+    \item Cartesian descriptor (external, x3D),
+    \item Internal descriptor (i3D).
+\end{itemize}
+Cartesian descriptors depend on a reference frame and require some sort of alignment or normalization to be used; they are alignment-dependent. 
+Internal descriptors are based on relative distances between atoms; they are alignment-free.
+
+The principal moments of inertia (PMI) descriptor consists in the first three principal moments of inertia of the molecule and contain information about the general shape of the molecule (rod-like, disc-like or sphere-like). 
+One limitation of PMI is that is completely size-independent.
+
+For the plane of best fir (PBF) descriptor, the heavy atoms of a molecule are considere data points and the plane of best fit is computed using a least-square fit. 
+The PBF descriptor is the average error of the fit (i.e. the average distance of heavy atoms from the plane).
+
+There is only a weak correlation between PMI and PBF. The PBF descriptor is much more discriminatory for planar or near-planar molecules than PMI.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Pharmacophores}
+
+A pharmacophore is a collection of steric and electronic features necessary for optimal supramolecular interactions with a specific biological target and to trigger its biological response.
+
+To generate a pharmacophore, one start with one active ligand or a set of active ligands (and eventually some inactive ones) and proceeds as follows:
+\begin{enumerate}
+    \item Enumerate lowe energy the conformers for each ligand,
+    \item Align all the conformers of all the ligand using a superimposition algorithm,
+    \item Select the best overlay with a single conformer of each active ligand as optimal overlay,
+    \item Abstract the optimal overlay to get the pharmacophore model (reduce atomic and structural features to feature points and spheres).
+\end{enumerate}
+
+Once a pharmacophore is generated, it needs to be validated before being applied in virtual screening.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{ROCS: Rapid Overlay of Chemical Structures}
+
+In the rapid overlay of chemical structures (ROCS) method, Gaussian functions represent the space occupied by atoms and different colours are given to different chemical types (rings, HBA, HBD, \dots).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{USR: Ultrafast Shape Recognition}
+
+The ultrafast shape recognition is a very fast method to compute the similarity between three dimensional structures.
+In this method, the centroid atom and some other atoms are used to compute statistical moments about atomic distribution to encode the three dimensional shape of the molecule.
+The similarity between two molecules is finally quantified as the Manhattan distance between the vectors of statistical moments.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{XED: Extended Electron Distribution}
+
+The extended electron distribution (XED) model provides a more accurate description of the electron distribution around atoms, by capturing more complex features such as lone pairs.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Conformer Generation and the Conformer Problem}
+
+Conformer generation is a challenging and time-consuming process. 
+There are very many conformers for a given molecule, in addition to tautomers and stereoisomers.
+There are two main ways of generating conformers:
+\begin{itemize}
+    \item Systematic search,
+    \item Stochastic (random) search.
+\end{itemize}
+
+The conformer problems comes from the fact that many conformers can be generated for a given molecule and is not clear which one is the most appropriate for drug design.
+
+Systematic search consider each rotatable bond in the molecule and explore the torsional angles of each bond.
+The problem with systematic search is the combinatorial explosion of all possible combinations of discrete bond rotations.
+Many conformers generated by systematic search will introduce steric clashes or high-energy conformations.
+Some methods are able to avoid the generation of such conformations, thus lowering the number of conformers to be generated. Other methods treat the molecule as a set of rigid fragments and only the rotatable bonds between fragments are considered.
+
+Stochastic search randomly explore the space of rotation of the rotatable bonds. 
+Since the search is heuristic, is not clear when it should be terminated.
+
+Once conformers are generated, it is difficult or impossible to know if any structure is similar to the one expected during a binding event. This is known as the conformer problem.
