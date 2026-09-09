@@ -1,6 +1,7 @@
 # pdf
 organic_chemistry.pdf
 in_silico_medicinal_chemistry.pdf
+quantum_computation_and_quantum_information.pdf
 
 # LaTeX
 *.aux
@@ -10,6 +11,7 @@ in_silico_medicinal_chemistry.pdf
 *.toc
 *eps-converted-to.pdf
 *synctex.gz
+*.out
 
 # editors
 .vscode

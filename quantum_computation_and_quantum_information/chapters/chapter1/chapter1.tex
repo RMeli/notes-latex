@@ -1,0 +1,180 @@
+\chapter{Introduction and overview}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Global perspectives}
+
+Quantum computation and quantum information is the study of the information processing using a quantum mechanical system.
+
+\section{Quantum bits}
+
+The state of a quibit is a vector in a two-dimensional complex vector space:
+\[
+    \ket{\psi} = \alpha \ket{0} + \beta \ket{1}.
+\]
+The state vector ${\psi}$ is a \emph{linear combination} of the two states $\ket{0}$ and $\ket{1}$,
+often called \emph{superposition}.
+The states $\ket{0}$ and $\ket{1}$ are called \emph{computational basis states},
+and form an orthonormal basis for this vector space.
+
+When we measure a qubit we get either the result \num{0} with probability $|\alpha|^2$ or the result \num{1} with probability $|\beta|^2$.
+Obviously, $|\alpha|^2 + |\beta|^2 = 1$ because probabilities must sum up to \num{1}.
+
+The state of a qubit can be interpreted geometrically as a point on the surface of a sphere, called the \emph{Bloch sphere}:
+\[
+    \ket{\psi} = \cos\left(\frac{\theta}{2}\right) \ket{0} + e^{i\varphi} \sin\left(\frac{\theta}{2}\right) \ket{1}.
+\]
+
+Measurement changes the state of a qubit, collapsing it from a superposition to one of the basis states,
+the one consistent with the measurement outcome.
+
+\subsection{Multiple qubits}
+
+A two qubit system has four \emph{computational basis states}: $\ket{00}$, $\ket{01}$, $\ket{10}$, and $\ket{11}$.
+A pair of qubits can exist in a superposition of these four states:
+\[
+    \ket{\psi} = \alpha_{00} \ket{00} + \alpha_{01} \ket{01} + \alpha_{10} \ket{10} + \alpha_{11} \ket{11}.
+\]
+The measurement result $x \in \{0, 1\}^2$ is obtained with probability $|\alpha_{x}|^2$,
+and after the measurement the state of the system is $\ket{xy}$.
+The \emph{normalization} condition is $\sum_{x \in \{0, 1\}^2} |\alpha_x|^2 = 1$.
+
+It is possible to measure just one of the qubits in a multi-qubit system.
+If for a two qubit system a measures gives \num{0} with probability $|\alpha_{00}|^2 + |\alpha_{01}|^2$,
+then the post-measurement state of the system is:
+\[
+    \ket{\psi} = \frac{\alpha_{00} \ket{00} + \alpha_{01} \ket{01}}{\sqrt{|\alpha_{00}|^2 + |\alpha_{01}|^2}}.
+\]
+The post-measurement state is \emph{re-normalized}, so that it still satisfies the normalization condition.
+
+The \emph{Bell state} or \emph{EPR pair} is a two qubit state that cannot be written as a product of two single qubit states:
+\[
+    \ket{\Phi^+} = \frac{\ket{00} + \ket{11}}{\sqrt{2}}
+\]
+The measurement outcomes of the two qubits in a Bell state are \emph{correlated}.
+The measurement correlations in the Bell state are stronger than what is possible in a classical system.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Quantum computation}
+
+\subsection{Single qubit gates}
+
+Quantum gates on a single qubit can be described by two-by-two \emph{unitary} matrices.
+A matrix is unitary if it satisfies $U^\dagger U = I$.
+The unitary constraint is the only constraint on quantum gates,
+so that any unitary matrix describes a valid quantum gate.
+
+The NOT gate is specified by the following unitary matrix:
+\[
+    X = \begin{pmatrix}
+        0 & 1 \\
+        1 & 0
+    \end{pmatrix}.
+\]
+
+Two other important single qubit gates are the $Z$ gate
+\[
+    Z = \begin{pmatrix}
+        1 & 0 \\
+        0 & -1
+    \end{pmatrix},
+\]
+and the \emph{Hadamard} gate
+\[
+    H = \frac{1}{\sqrt{2}} \begin{pmatrix}
+        1 & 1 \\
+        1 & -1
+    \end{pmatrix}.
+\]
+
+In the Block sphere picture, single qubit gates correspond to rotations and reflections of the sphere.
+The Hadamard gate corresponds to a rotation of the sphere about the $\hat{y}$ axis by $\pi/2$ radians,
+followed by a rotation about the $\hat{x}$ axis by $\pi$ radians.
+
+The $X$, $Z$, and $H$ gates are represented by the following quantum circuit diagrams:
+\[
+    \Qcircuit @C=3em @R=0em {
+       \lstick{\alpha\ket{0} + \beta\ket{1}} & \gate{X} & \rstick{\beta\ket{0} + \alpha\ket{1}} \qw \\
+    }
+\]
+\[
+    \Qcircuit @C=3em @R=.1em {
+       \lstick{\alpha\ket{0} + \beta\ket{1}} & \gate{Z} & \rstick{\alpha\ket{0} - \beta\ket{1}} \qw \\
+    }
+\]
+\[
+    \Qcircuit @C=3em @R=.1em {
+       \lstick{\alpha\ket{0} + \beta\ket{1}} & \gate{H} & \rstick{\frac{\alpha + \beta}{\sqrt{2}}\ket{0} + \frac{\alpha - \beta}{\sqrt{2}}\ket{1}} \qw \\
+    }
+\]
+
+Since there are infiintely many $2 \times 2$ unitary matrices, there are infinitely many single qubit gates.
+An arbitrary $2 \times 2$ unitary matrix can be expressed as:
+\[
+    U = e^{i\alpha}
+    \begin{pmatrix}
+        e^{-i\beta/2} & 0 \\
+        0 & e^{i\beta/2}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \cos(\gamma/2) & -\sin(\gamma/2) \\
+        \sin(\gamma/2) & \cos(\gamma/2)
+    \end{pmatrix}
+    \begin{pmatrix}
+        e^{-i\delta/2} & 0 \\
+        0 & e^{i\delta/2}
+    \end{pmatrix}
+\]
+
+\subsection{Multiple qubit gates}
+
+An arbitrary quantum computation on any number of qubits can be generated by a finite set of gates that is said to be \emph{universal} for quantum computation.
+
+The prototypical two qubit gate is the \emph{controlled-NOT} or CNOT gate. Its matrix representation is
+\[
+ U_\text{CN} = \begin{pmatrix}
+        1 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 \\
+        0 & 0 & 0 & 1 \\
+        0 & 0 & 1 & 0
+    \end{pmatrix},
+\]
+while the circuit representation is
+\[
+    \Qcircuit @C=3em @R=2em {
+        \lstick{\ket{A}}& \ctrl{1} & \rstick{\ket{A}} \qw \\
+        \lstick{\ket{B}}& \targ & \rstick{\ket{A \oplus B}} \qw
+    }
+\]
+If the control qubit is set to \num{0}, the target qubit is unchanged.
+If the control qubit is set to \num{1}, the target qubit is flipped.
+The CNOT gate is a generalization of the classical XOR gate: $\ket{A, B} \mapsto \ket{A, A \oplus B}$ 
+(where $\oplus$ is addition modulo \num{2}, which is what the XOR gate computes).
+
+Unitary quantum gates are always reversible because $U^\dagger U = I$. 
+The inverse of a unitary matrix is also an unitary matrix,
+therefore a quantum gate can always be reversed by another quantum gate.
+
+We have the following \emph{universality} result:
+\emph{any multi-qubit quantum gate can be expressed as a combination of CNOT gates and single qubit gates.}
+
+\subsection{Measurements in bases other than the computational basis}
+
+The computational basis is just one possible basis for a single qubit.
+Another possible choice is the \emph{Hadamard basis}, which consists of the states $\ket{+}$ and $\ket{-}$:
+\[
+    \ket{+} = \frac{\ket{0} + \ket{1}}{\sqrt{2}}, \quad
+    \ket{-} = \frac{\ket{0} - \ket{1}}{\sqrt{2}}.
+\]
+An arbitrary state $\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$ can be expressed in the Hadamard basis as:
+\[
+    \ket{\psi} = \frac{\alpha + \beta}{\sqrt{2}} \ket{+} + \frac{\alpha - \beta}{\sqrt{2}} \ket{-}.
+\]
+It is possible to measure a qubit in the Hadamard basis, 
+in which case the measurement result is either ``+'' with probability $|\alpha + \beta|^2/2$ or ``-'' with probability $|\alpha - \beta|^2/2$.
+
+Given any basis state $\ket{a}$ and $\ket{b}$, it is possible to express an arbitrary state $\ket{\psi}$ in the basis $\{\ket{a}, \ket{b}\}$ as $\ket{\psi} = \alpha \ket{a} + \beta \ket{b}$.
+If the states are \emph{orthonormal},
+it is possible to measure a qubit with respect to the basis $\{\ket{a}, \ket{b}\}$,
+giving the measurement result $a$ with probability $|\alpha|^2$ and $b$ with probability $|\beta|^2$.
+
+\subsection{Quantum circuits}
