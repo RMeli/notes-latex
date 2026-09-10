@@ -1,0 +1,176 @@
+\chapter{Introduction to quantum mechanics}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Linear algebra}
+Linear algebra is the study of vector spaces and of linear operations on those vector spaces.
+The vector space of most interest for quantum mechanics is $\mathbb{C}^n$,
+the set of all $n$-tuples of complex numbers $(z_1, \ldots, z_n)$.
+Vector spaces have an \emph{addition} operation and a \emph{scalar multiplication} operation.
+A vector space contains a \emph{zero vector} denoted by $0$
+(not to be confused with $\ket{0}$),
+so that $\ket{v} + 0 = \ket{v}$ for any vector $\ket{v}$.
+
+A \emph{vector subspace} of a vector space $V$ is a subset $W \subseteq V$ that is itself a vector space
+(W must be closed under addition and scalar multiplication, and contain the zero vector).
+
+\subsection{Bases and linear independence}
+A \emph{spanning set} for a vector space is a set of vectors $\ket{v_1}, \ldots, \ket{v_n}$ such that any vector $\ket{v} \in V$ can be expressed as a linear combination of the vectors in the spanning set:
+\[
+    \ket{v} = \sum_{i=1}^n a_i \ket{v_i}
+\]
+
+A set of non-zero vectors $\ket{v_1}, \ldots, \ket{v_n}$ is \emph{linearly dependent} if there exists a set of complex numbers $a_1, \ldots, a_n$, not all zero, such that
+\[
+    \sum_{i=1}^n a_i \ket{v_i} = 0
+\]
+
+A set of vectors is \emph{linearly independent} if it is not linearly dependent.
+Any two sets of linearly independent vectors that span the same vector space $V$ contain the same number of vectors.
+Such sets are called \emph{bases} for the vector space $V$, and always exists.
+\graffito{From now on, we only consider finite-dimensional vector spaces.}
+The number of elements in the basis is called \emph{dimension} of $V$.
+
+\subsection{Linear operators and matrices}
+A \emph{linear operator} $A$ between two vector spaces $V$ and $W$ is any function $A: V \to W$ which is linear in its inputs:
+\[
+    A\left(\sum_{i=1}^n a_i \ket{v_i}\right) = \sum_{i=1}^n a_i A\left(\ket{v_i}\right) \equiv \sum_{i=1}^n a_i A\ket{v_i}
+\]
+A linear operator $A$ defined on $V$ maps $V$ to itself, i.e. $A: V \to V$.
+
+The \emph{identity operator} $I$ is the linear operator that maps every vector to itself: $I\ket{v} = \ket{v}$ for all $\ket{v} \in V$.
+The \num{0} operator maps all vectors to the zero vector: $0\ket{v} = 0$ for all $\ket{v} \in V$.
+
+If $A\colon V \to W$ and $B\colon W \to X$ are linear operators, then the \emph{composition} $BA\colon V \to X$ is also a linear operator defined by $(BA)\left(\ket{v}\right) = B\left(A\left(\ket{v}\right)\right)$.
+We usually write $BA\ket{v}$ instead of $(BA)\left(\ket{v}\right)$.
+
+Linear operators have a \emph{matrix representation} in a given basis.
+
+A matrix is a linear operator since
+\[
+    A\left(\sum_{i=1}^n a_i \ket{v_i}\right) = \sum_{i=1}^n a_i A\ket{v_i}
+\]
+is true where $A$ is a matrix and $\ket{v_i}$ are column vectors.
+Conversely, a linear operator can be given a matrix representation.
+If $A\\colon V \to W$ is a linear operator,
+and $\{\ket{v_1}, \ldots, \ket{v_n}\}$ and $\{\ket{w_1}, \ldots, \ket{w_m}\}$ are bases for $V$ and $W$, respectively,
+for each $j=1, \ldots, m$ there exist complex numbers $A_{ij}$ for each $i=1, \ldots, n$ such that
+\[
+    A\ket{v_j} = \sum_{i=1}^m A_{ij}\ket{w_i}
+\]
+The matrix whose entries are $A_{ij}$ is called the \emph{matrix representation} of the linear operator $A$.
+
+The matrix representation of $A$ is completely equivalent to the linear operator $A$.
+
+\subsection{The Pauli matrices}
+The \emph{Pauli matrices} are a set of three $2 \times 2$ complex matrices which are Hermitian and unitary.
+\[
+    \sigma_0 = I = \begin{pmatrix}
+        1 & 0 \\
+        0 & 1
+    \end{pmatrix}
+\]
+\[
+    \sigma_1 = \sigma_x = X = \begin{pmatrix}
+        0 & 1 \\
+        1 & 0
+    \end{pmatrix}
+\]
+\[
+    \sigma_2 = \sigma_y = Y = \begin{pmatrix}
+        0 & -i \\
+        i & 0
+    \end{pmatrix}
+\]
+\[
+    \sigma_3 = \sigma_z = Z = \begin{pmatrix}
+        1 & 0 \\
+        0 & -1
+    \end{pmatrix}
+\]
+
+\subsection{Inner products}
+An \emph{inner product} on a vector space $V$ is a function $(\cdot, \cdot): V \times V \to \mathbb{C}$ that satisfies the following properties:
+\begin{itemize}
+    \item $(\cdot, \cdot)$ is linear in its second argument
+        \[
+            \left(\ket{v}, \sum_i \lambda_i \ket{w_i}\right) = \sum_i \lambda_i (\ket{v}, \ket{w_i})
+        \]
+    \item $(\cdot, \cdot)$ is conjugate symmetric
+        \[
+            (\ket{v}, \ket{w}) = (\ket{w}, \ket{v})^*
+        \]
+    \item $(\cdot, \cdot)$ is positive definite
+        \[
+            (\ket{v}, \ket{v}) \geq 0 \quad \text{and} \quad (\ket{v}, \ket{v}) = 0 \iff \ket{v} = 0
+        \]
+\end{itemize}
+
+A vector space equipped with an inner product is called an \emph{inner product space}.
+For finite-dimensional complex vector spaces, the inner product space is an \emph{Hilbert space}.
+
+In quantum mechanics, the inner product is usually denoted by $\braket{v|w}$ instead of $(\ket{v}, \ket{w})$. 
+$\ket{v}$ is the \emph{dual vector} of $\bra{v}$.
+The dual is a linear operator from the inner product space $V$ to $\mathbb{C}$ defined by $\bra{v}(\ket{w}) = \braket{v|w} = (\ket{v}, \ket{w})$.
+
+$\mathbb{C}^n$ has an inner product defined by
+\[
+    \left((y_1, \ldots, y_n), (z_1, \ldots, z_n)\right) = \sum_{i=1}^n y_i^* z_i = (y^*_1, \ldots, y^*_n)\begin{pmatrix}
+        z_1 \\
+        \vdots \\
+        z_n
+\end{pmatrix}
+\]
+
+Vectors $\ket{v}$ and $\ket{w}$ are \emph{orthogonal} if $\braket{v|w} = 0$.
+The \emph{norm} of a vector $\ket{v}$ is defined as $\norm{\ket{v}} = \sqrt{\braket{v|v}}$.
+A \emph{unit vector} is a vector $\ket{v}$ such that $\norm{\ket{v}} = 1$.
+$\ket{v}/\norm{\ket{v}}$ is the \emph{normalized} form of $\ket{v}$.
+A set $\ket{i}$ of vectors with index $i$ is \emph{othonormal} if $\braket{i|j} = \delta_{ij}$.
+
+Given a basis set $\{\ket{w_1}, \ldots, \ket{w_n}\}$ for a vector space $V$ with an inner product,
+the \emph{Gram-Schmidt orthogonalization} procedure produces an orthonormal basis set $\{\ket{v_1}, \ldots, \ket{v_n}\}$ for $V$.
+Define $\ket{v_1} = \ket{w_1}/\norm{\ket{w_1}}$.
+For $1\leq k \leq d-1$, define $\ket{v_{k+1}}$ inductively by
+\[
+    \ket{v_{k+1}} = \frac{\ket{w_{k+1}} - \sum_{i=1}^k \braket{v_i|w_{k+1}}\ket{v_i}}{\norm{\ket{w_{k+1}} - \sum_{i=1}^k \braket{v_i|w_{k+1}}\ket{v_i}}}
+\]
+Any finite dimensional vector space of dimension $d$ has an orthonormal basis.\graffito{From now on, when we speak of a matrix representation for a linear operator,
+we mean a matrix representation with respect to orthonormal input and output bases.
+If the input and output spaces are the same, then we assume that the input and output bases are the same,
+unless stated otherwise.}
+
+The inner product of two vectors is equal to the vector inner product between two matrix representations of the vectors,
+with respect to the same an orthonormal basis. 
+The dual vector $\bra{v}$ has a matrix representation that is the conjugate transpose of the matrix representation of $\ket{v}$.
+
+Linear operators can be represented using the inner product.
+If $\ket{v}$ is a vector in an inner product space $V$,
+and $\ket{w}$ is a vector in an inner product space $W$,
+then the linear operator $\ket{w}\bra{v}$ maps $V$ to $W$ and is defined by
+\[
+    (\ket{w}\bra{v})\ket{v'} = \braket{v|v'}\ket{w}
+\]
+This representation is called \emph{outer product} representation.
+
+The outer product representation gives us the \emph{completness relation} for orthonormal basis sets:
+\[
+    \sum_i \ket{i}\bra{i} = I
+\]
+
+One application of the completeness relation is to give a means for representing any operator in the outer product representation.
+Suppose $A\colon V \to W$ is a linear operator,
+$\ket{v_i}$ is an orthonormal basis for $V$, and $\ket{w_j}$ is an orthonormal basis for $W$.
+Then we can write
+\[
+    A = I_W A I_V = \sum_{j} \ket{w_j}\bra{w_j} A \sum_i \ket{v_i}\bra{v_i} = \sum_{i,j} \braket{w_j|A|v_i}\ket{w_j}\bra{v_i} 
+\]
+which is the outer product representation of $A$.
+A has matrix elements $A_{ji} = \braket{w_j|A|v_i}$ with respect to the orthonormal bases $\{\ket{v_i}\}$ and $\{\ket{w_j}\}$.
+
+The \emph{Cauchy-Schwarz inequality} states that for any vectors $\ket{v}$ and $\ket{w}$ in an inner product space,
+\[
+    \abs{\braket{v|w}}^2 \leq \braket{v|v}\braket{w|w}
+\]
+It is an important geometric fact about Hilbert spaces.
+
+\subsection{Eigenvectors and eigenvalues}
