@@ -178,3 +178,332 @@ it is possible to measure a qubit with respect to the basis $\{\ket{a}, \ket{b}\
 giving the measurement result $a$ with probability $|\alpha|^2$ and $b$ with probability $|\beta|^2$.
 
 \subsection{Quantum circuits}
+
+A simple quantum circuit to swap the states of two qubits is given by the following circuit diagram:
+\[
+    \Qcircuit @C=1em @R=2em {
+        \lstick{\ket{A}} & \ctrl{1} & \targ
+        & \ctrl{1} & \rstick{\ket{B}} \qw \\
+        \lstick{\ket{B}} & \targ & \ctrl{-1}
+        & \targ & \rstick{\ket{A}} \qw
+    }
+\]
+Quantum circuits are read left-to-right, 
+and each line in the circuit represent a \emph{wire} in the quantum circuit 
+(not necessarily a physical wire; represents the passage of time, or a physical particle moving though space).
+
+By convention,
+the state input to the circuit is a computational basis state,
+usually $\ket{0}$.
+
+In a quantum circuit, loops are not allowed: 
+the circuit it is \emph{acyclic}.
+Wires can't be joined or split, and each wire can only be acted on by one gate at a time.
+Joining wires (FANIN) is not reversible, and splitting wires (FANOUT) is not allowed because of the no-cloning theorem.
+
+The following circuit represents a three qubit controlled-$U$ gate.
+\[
+    \Qcircuit @C=1em @R1em {
+    & \ctrl{1} & \qw \\
+    & \multigate{1}{U} & \qw \\
+    & \ghost{U} & \qw \\
+    }
+\]
+The gate has one control qubit and two target qubits.
+
+A measruement operation in a quantum circuit converts a single qubit state $\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$ into a classical bit $M$,
+which is either \num{0} with probability $|\alpha|^2$ or \num{1} with probability $|\beta|^2$.
+\[
+    \Qcircuit @C=1em @R=2em {
+        \lstick{\ket{\psi}} & \meter & \rstick{M} \cw
+    }
+\]
+A double line wire in a quantum circuit represents a classical bit, while a single line wire represents a qubit.
+
+\subsection{Qubit copying circuit?}
+
+A classical CNOT gate can be used to copy a classical bit $b$ into a second bit that is initialized to \num{0},
+since $b \oplus 0 = b$.
+
+It turns out to be impossible to make a copy of an unknown quantum state.
+This property is called the \emph{no-cloning theorem}.
+It is one of the main differences between classical and quantum information.
+
+\subsection{Bell states}
+A Hadamard gate followed by a CNOT gate can be used to create Bell states (or EPR states, or EPR pairs):
+\[
+    \Qcircuit @C=1em @R=2em {
+        & \gate{H} & \ctrl{1} & \qw \\
+        & \qw & \targ & \qw
+    }
+\]
+Bell states can be expressed in the computational basis as:
+\[
+    \ket{\beta_{xy}} = \frac{\ket{0, y} + (-1)^x \ket{1, \bar{y}}}{\sqrt{2}},
+\]
+where $\hat{y}$ is the bitwise negation of $y$.
+
+Explicitly, the four Bell states are:
+\[
+    \ket{\beta_{00}} = \frac{\ket{00} + \ket{11}}{\sqrt{2}},
+\]
+\[
+    \ket{\beta_{01}} = \frac{\ket{01} + \ket{10}}{\sqrt{2}},
+\]
+\[
+    \ket{\beta_{10}} = \frac{\ket{00} - \ket{11}}{\sqrt{2}},
+\]
+\[
+    \ket{\beta_{11}} = \frac{\ket{01} - \ket{10}}{\sqrt{2}}.
+\]
+
+\subsection{Quantum teleportation}
+
+\emph{Quantum teleportation} allows to use an entangle EPR pair to send an unknown quantum state $\ket{\psi}$ from Alice to Bob,
+using only classical communication and local measurements.
+
+Quantum teleportation can be implemented with the following quantum circuit:
+\[
+    \Qcircuit @C=1em @R=2em {
+        \lstick{\ket{\psi}} & \qw & \ctrl{1} & \gate{H} & \meter & \cw & \rstick{M_1} \cw \\
+        \lstick{} & \qw & \targ & \qw & \meter & \rstick{M_2} \cw & \\
+        \lstick{} & \qw & \qw & \qw & \qw & \gate{X^{M_2}}  \cwx[-1]  &  \gate{Z^{M_1}}  \cwx[-2]  &  \rstick{\ket{\psi}}  \qw
+        \inputgroupv{2}{3}{0.6em}{1.75em}{\ket{\beta_{00}}}  \\ 
+    }
+\]
+
+It is instructive to analyze the quantum teleportation circuit step by step.
+Alice has a qubit in an unknown state $\ket{\psi}=\alpha \ket{0} + \beta \ket{1}$,
+and one of the qubits of the EPR pair $\ket{\beta_{00}}$ shared with Bob.
+The initial state of the whole system is
+\[
+    \ket{\psi_0} \otimes \ket{\beta_{00}} = \frac{1}{\sqrt{2}}
+    \left[
+        \alpha\ket{0} \otimes (\ket{00} + \ket{11}) +
+        \beta\ket{1} \otimes (\ket{00} + \ket{11})
+    \right].
+\]
+Alice applies a CNOT gate to her two qubits, so that the state of the system becomes
+\[
+    \ket{\psi_1} = \frac{1}{\sqrt{2}}
+    \left[
+        \alpha\ket{0} \otimes (\ket{00} + \ket{11}) + 
+        \beta\ket{1} \otimes (\ket{10} + \ket{01})
+    \right].
+\]
+Next, Alice applies a Hadamard gate to her first qubit, so that the state of the system becomes
+\[
+    \ket{\psi_2} = \frac{1}{2}
+    \left[
+        \alpha(\ket{0} + \ket{1}) \otimes (\ket{00} + \ket{11}) +
+        \beta(\ket{0} - \ket{1}) \otimes (\ket{10} + \ket{01})  
+    \right].
+\]
+By regrouping the terms differently (following their spatial distribution),
+we can express the state of the system as
+\[
+\begin{aligned}
+    \ket{\psi_2} = \frac{1}{2} \big[ & \ket{00} \otimes (\alpha\ket{0} + \beta\ket{1}) + 
+    \ket{01} \otimes (\alpha\ket{1} + \beta\ket{0}) + \\
+    & \ket{10} \otimes (\alpha\ket{0} - \beta\ket{1}) +
+    \ket{11} \otimes (\alpha\ket{1} - \beta\ket{0}) 
+    \big].
+\end{aligned}
+\]
+From this expression we can see that if Alice measures her two qubits and gets the result $M_1 M_2$,
+then Bob's qubit is in the state
+\[
+    \ket{\psi_B} = \alpha\ket{M_2} + (-1)^{M_1}\beta\ket{\bar{M_2}}.
+\]
+To know the state of his qubit, Bob needs to know the measurement result $M_1 M_2$ from Alice.
+This is what prevents teleportation from being used to transmit information faster than the speed of light; 
+the classical communication of the measurement result is limited by the speed of light.
+Once Bob knows the measurement result,
+he know his state and can therefore apply $Z^{M_1}X^{M_2}$ to his qubit to recover the original state $\ket{\psi}$.
+\emph{The time goes from left to right in a quantum diagram, but the matrix products terms on the right happen first.}
+
+Quantum teleportation does not clone the state $\ket{\psi}$;
+after Alice's measurement her original qubit is in a basis state $\ket{M_1}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Quantum algorithms}
+
+\subsection{Classical computation on a quantum computer}
+It is possible to simulate a classical logic gate using a quantum circuit.
+Any classical circuit can be replaced by an equivalent circuit containing only \emph{reversible} elements,
+using the reversible \emph{Toffoli} gate.
+\[
+    \Qcircuit @C=1em @R=2em {
+        \lstick{a} & \ctrl{1} & \rstick{a} \qw \\
+        \lstick{b} & \ctrl{1} & \rstick{b} \qw \\
+        \lstick{c} & \targ & \rstick{c\oplus ab} \qw
+    }
+\]
+The target bit $c$ is flipped if and only if both control bits $a$ and $b$ are set to \num{1}.
+The Toffoli gate is reversible since applying the gate twice returns the original state of the three bits.
+The Toffoli gate can be used to simulate NAND gates, and the FANOUT operation.
+With these two operations, it is possible to simulate any other element in a classical circuit.
+
+The quantum Toffoli gate is the quantum equivalent of the classical Toffoli gate:
+\[
+    \Qcircuit @C=1em @R=2em {
+        \lstick{\ket{a}} & \ctrl{1} & \rstick{\ket{a}} \qw \\
+        \lstick{\ket{b}} & \ctrl{1} & \rstick{\ket{b}} \qw \\
+        \lstick{\ket{c}} & \targ & \rstick{\ket{c\oplus ab}} \qw \
+    }
+\]
+The quantum Toffoli gate is represented by an $8 \times 8$ unitary matrix,
+and is therefore reversible.
+The quantum Toffoli gate can be used to simulate irreversible classical logic gates as the classical Toffoli gate can.
+This ensures that a quantum computer can simulate any classical computation.
+
+Non-deterministic classical computers can also be simulated by a quantum computer.
+Instead of using the input $\ket{0}$,
+a quantum computer can use the input $\ket{+} = H\ket{0}$ to simulate a non-deterministic classical computer.
+
+\subsection{Quantum parallelism}
+
+Suppose we have a classical function $f\colon\{0, 1\}\to \{0, 1\}$.
+We denote $U_f$ the map $\ket{x, y} \mapsto \ket{x, y \oplus f(x)}$, which is unitary.
+A quantum computer can be used to compute $U_f$:
+\[
+    \Qcircuit @C=1em @R=2em {
+        \lstick{\ket{x}} & \multigate{1}{U_f} & \rstick{\ket{x}} \qw \\
+        \lstick{\ket{y}} & \ghost{U_f} & \rstick{\ket{y\oplus f(x)}} \qw
+    }
+\]
+With $\ket{x} = H\ket{0} = (\ket{0} + \ket{1})/\sqrt{2}$ and $\ket{y} = \ket{0}$, we have:
+\[
+    U_f\left[\frac{\ket{0} + \ket{1}}{\sqrt{2}} \otimes \ket{0} \right] = \frac{1}{\sqrt{2}} \left( \ket{0, f(0)} + \ket{1, f(1)} \right).
+\]
+We have evaluated the function $f$ on both inputs \num{0} and \num{1} simultaneously,
+using a single evaluation of $U_f$.
+This is referred to as \emph{quantum parallelism}.
+
+Quantum parallelism is not immediately useful,
+since measuring the output will produce either $f(0)$ or $f(1)$.
+To be useful,
+quantum computation also requires the ability to extract information about more than one value of $f$ from a superposition.
+
+Using the \emph{Hadamard transform} (or \emph{Walsh-Hadamard transform}) $H^{\otimes n}$ on $n$ qubits,
+ it is possible to create a superposition of all $2^n$ possible inputs to the function $f$:
+ \[
+   H^{\otimes n}\ket{0}^{\otimes n} = \frac{1}{\sqrt{2^n}} \sum_{x \in \{0, 1\}^n} \ket{x}.
+ \]
+Therefore, the Hadamard transform produces an equal superposision of all computational basis states of $n$ qubits.
+
+Quantum parallelism can be generalized to functions $f\colon\{0, 1\}^n \to \{0, 1\}$ using the Hadamard transform.
+Prepare the system in the state $\ket{0}^{\otimes n} \otimes \ket{0}$, and apply $H^{\otimes n}$ to the first $n$ qubits.
+Then, apply the unitary map $U_f$ to the system, which produces the state
+\[
+    \frac{1}{\sqrt{2^n}} \sum_{x \in \{0, 1\}^n} \ket{x} \otimes \ket{f(x)}.
+\]
+
+\subsection{Deutsch's algorithm}
+Deutsch's algorithm shows how quantum circuits can outperform classical circuits.
+Deutsch's algorithm combines quantum parallelism with \emph{interference}.
+
+We consider the following quantum circuit:
+\[
+    \Qcircuit @C=1em @R=2em {
+        \lstick{\ket{0}} & \gate{H} & \multigate{1}{U_f} & \gate{H} & \qw \\
+        \lstick{\ket{1}} & \gate{H} & \ghost{U_f} &  \qw & \qw
+    }
+\]
+The input of the quantum circuit is $\ket{\psi_0} = \ket{0}\otimes\ket{1}$.
+ After the two Hadamard gates the system is in state
+ \[
+    \ket{\psi_1} = \frac{\ket{0} + \ket{1}}{\sqrt{2}} \otimes \frac{\ket{0} - \ket{1}}{\sqrt{2}}.
+ \]
+Applying the unitary map $U_f$ to the system produces the state
+% distinguish the cases $f(0) = f(1)$ and $f(0) \neq f(1)$
+% use braces for the two cases
+\[
+    \ket{\psi_2} =
+    \begin{cases}
+        \pm\frac{\ket{0} + \ket{1}}{\sqrt{2}} \otimes \frac{\ket{0} - \ket{1}}{\sqrt{2}},& \text{if } f(0) = f(1) \\
+        \pm\frac{\ket{0} - \ket{1}}{\sqrt{2}} \otimes \frac{\ket{0} - \ket{1}}{\sqrt{2}},& \text{if } f(0) \neq f(1)
+    \end{cases}
+\]
+The final Hadamard gate only acts on the firs qubit, and produces the state
+\[
+    \ket{\psi_3} =
+    \begin{cases}
+        \pm\ket{0} \otimes \frac{\ket{0} - \ket{1}}{\sqrt{2}},& \text{if } f(0) = f(1) \\
+        \pm\ket{1} \otimes \frac{\ket{0} - \ket{1}}{\sqrt{2}},& \text{if } f(0) \neq f(1)
+    \end{cases}
+\]
+Since we have $f(0)\oplus f(1) = 0$ if and only if $f(0) = f(1)$, we can write
+\[
+    \ket{\psi_3} = \pm\ket{f(0)\oplus f(1)} \otimes \frac{\ket{0} - \ket{1}}{\sqrt{2}}.
+\]
+By measuring the first qubit, we can determine $f(0)\oplus f(1)$,
+which is a global property of the function $f$,
+with a single evaluation $U_f$.
+A classical circuit would require two evaluations of $f$ to determine $f(0)\oplus f(1)$.
+
+\subsection{The Deutsch-Jozsa algorithm}
+The Deutsch-Jozsa algorithm is a generalization of Deutsch's algorithm to functions $f\colon\{0, 1\}^n \to \{0, 1\}$.
+
+Alice selects a number $x \in \{0, 1\}^n$ and sends it to Bob.
+Bob computes $f(x)$ and sends the result back to Alice.
+Bob uses either a constant function, or a balanced function (0 for half the inputs, 1 for the other half).
+Alice has to determine whether Bob's function is constant or balanced,
+given the result of the measurement.
+
+The best classical algorithm requires $2^n/2 + 1$ evaluations of $f$ in the worst case.
+Each time has to send Bob $n$ bits of information.
+
+The Deutsch-Jozsa algorithm can determine the nature of the function with a single evaluation of $f$.
+The quantum circuit for the Deutsch-Jozsa algorithm is the following:
+\[
+    \Qcircuit @C=1em @R=2em {
+        \lstick{\ket{0}^{\otimes n}} & \gate{H^{\otimes n}} & \multigate{1}{U_f} & \gate{H^{\otimes n}} & \qw \\
+        \lstick{\ket{1}} & \gate{H} & \ghost{U_f} &  \qw & \qw
+    }
+\]
+The input state of the circuit is $\ket{\psi_0} = \ket{0}^{\otimes n} \otimes \ket{1}$.
+By applying the Hadamard transform to the first $n$ qubits and the Hadamard gate to the last qubit, we get
+\[
+    \ket{\psi_1} = \frac{1}{\sqrt{2^n}} \sum_{x \in \{0, 1\}^n} \ket{x} \otimes \frac{\ket{0} - \ket{1}}{\sqrt{2}}.
+\]
+The query register is in an equal superposition of all possible inputs to the function $f$,
+while the answer register is in an evenly weighted superposition of the two possible outputs of $f$.
+Bob evaluates the function $f$ using the unitary map $U_f: \ket{x}\otimes\ket{y} \mapsto \ket{x}\otimes\ket{y \oplus f(x)}$,
+which produces the state
+\[
+    \ket{\psi_2} = \frac{1}{\sqrt{2^n}} \sum_{x \in \{0, 1\}^n} (-1)^{f(x)} \ket{x} \otimes \frac{\ket{0} - \ket{1}}{\sqrt{2}}.
+\]
+The function evaluation is now stored in the amplitude of the superposition state of the query register.
+
+The effect of the Hadamard transform on the state $\ket{x}$ is given by
+\[
+    H^{\otimes n}\ket{x_1}\otimes\cdots\otimes\ket{x_n} = \frac{1}{\sqrt{2^n}} \sum_{z \in \{0, 1\}^n} (-1)^{x\cdot z} \ket{z},
+\]
+where $x\cdot z$ is the bitwise inner product of $x$ and $z$.
+
+Applying the Hadamard transform to the query register produces the state
+\[
+    \ket{\psi_3} = \frac{1}{2^n} \sum_{z \in \{0, 1\}^n} \sum_{x \in \{0, 1\}^n} (-1)^{x\cdot z + f(x)}\ket{z} \otimes \frac{\ket{0} - \ket{1}}{\sqrt{2}}.
+\]
+The amplitude of the state $\ket{0}^{\otimes n}$ is $\sum_x (-1)^{f(x)}/2^n$.
+
+If $f$ is a constant function, then the amplitude of $\ket{0}^{\otimes n}$ is $\pm 1$.
+Since $\ket{\psi_3}$ is normalized, 
+it follows that the amplitude of all other amplitudes is \num{0},
+and a measurement of the query register will always produce the result $\ket{0}^{\otimes n}$.
+
+If $f$ is a balanced function,
+then the positive and negative amplitudes for $\ket{0}^{\otimes n}$ cancel out,
+and the amplitude of $\ket{0}^{\otimes n}$ is \num{0}.
+Therefore, the measurement of the query register will never produce the result $\ket{0}^{\otimes n}$.
+
+If alice measures all \num{0}s then the function is constant; otherwise, the function is balanced.
+
+\subsection{Quantum algorithms summarized}
+There are three main classes of quantum algorithms providing an advantage over known classical algorithms:
+\begin{itemize}
+    \item algorithms based on the \emph{quantum Fourier transform},
+    \item \emph{quantum search} alforithms, and
+    \item \emph{quantum simulation} algorithms.
+\end{itemize}
