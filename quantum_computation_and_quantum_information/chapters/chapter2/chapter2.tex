@@ -342,3 +342,109 @@ The terms $a_{ij}B$ represent $p\times q$ sub-matrices.
 The notation $\ket{\psi}^{\otimes k}$ is shorthand for $\ket{\psi} \otimes \cdots \otimes \ket{\psi}$ ($k$ times).
 
 \subsection{Operator functions}
+Given a function $f: \mathbb{C} \to \mathbb{C}$,
+it is possible to define a corresponding matrix function on normal matrices.
+Let $A = \sum_a a\ket{a}\bra{a}$ be the spectral decomposition of a normal matrix $A$.
+The matrix function $f(A)$ is defined by
+\[
+    f(A) = \sum_a f(a)\ket{a}\bra{a}.
+\]
+$f(A)$ is uniquely defined.
+
+Let $\vec{v}$ be any real, three-dimensional unit vector, and let $\theta$ be any real number.
+The Pauli matrices satisfy the following identity:
+\[
+    \exp\left(i\theta \vec{v} \cdot \vec{\sigma}\right) = \cos(\theta)I + i\sin(\theta)\vec{v} \cdot \vec{\sigma},
+\]
+where $\vec{v} \cdot \vec{\sigma} = \sum_{i=1}^3 v_i \sigma_i$.
+
+The \emph{trace} of a matrix $A$ is defined as the sum of its diagonal elements:
+\[
+    \tr(A) = \sum_i A_{ii}
+\]
+The trace is cyclic,
+\[
+    \tr(AB) = \tr(BA),
+\]
+and linear.
+From the cyclic property it follows that the trace of matrix is invariant under an unitary \emph{similarity transformation} $A \to UAU^\dagger$.
+Therefore, the trace of an operator is the trace of any matrix representation of the operator.
+
+If $\ket{\psi}$ is a unit vector and $A$ is an arbitrary linear operator,
+we have
+\[
+    \tr\left(A\ket{\psi}\bra{\psi}\right) = \braket{\psi|A|\psi}
+\]
+
+\subsection{The commutator and anti-commutator}
+The \emph{commutator} between two linear operators $A$ and $B$ is
+\[
+    [A, B] = AB - BA
+\]
+If $[A, B] = 0$, then $A$ and $B$ are said to \emph{commute}.
+
+The \emph{anti-commutator} between two linear operators $A$ and $B$ is
+\[
+    \{A, B\} = AB + BA
+\]
+If $\{A, B\} = 0$, then $A$ and $B$ are said to \emph{anti-commute}.
+
+\begin{theorem}[Simultaneous diagonalization theorem]
+    Suppose $A$ and $B$ are Hermitian operators. 
+    Then $[A, B]=0$ if an only if there exist an orthonormal basis such that both $A$ and $B$ are diagonal with respect to that basis.
+    We say that $A$ and $B$ are \emph{simultaneously diagonalizable} in this case.        
+\end{theorem}
+
+The Pauli matrices do not commute (they anti-commute), and have the following commutation relations:
+\[
+    [X,Y] = 2iZ
+\]
+\[
+    [Y,Z] = 2iX
+\]
+\[
+    [Z,X] = 2iY
+\]
+These commutation relations can be written more succinctly as
+\[
+    [\sigma_i, \sigma_j] = 2i\sum_k \epsilon_{ijk}\sigma_k,
+\]
+where $\epsilon_{ijk}$ is the Levi-Civita symbol 
+($\epsilon_{ijk} = 1$ if $(i,j,k)$ is an even permutation of $(1,2,3)$,
+$\epsilon_{ijk} = -1$ if $(i,j,k)$ is an odd permutation of $(1,2,3)$,
+and $\epsilon_{ijk} = 0$ otherwise).
+
+\subsection{The polar and singular value decompositions}
+The \emph{polar} and \emph{singular value} decompositions allow to break down any operator into products of unitary operators and positive operators.
+
+\begin{theorem}[Polar decomposition]
+    Let $A$ be a linear operator on a vector space $V$.
+    Then there exists unitary $U$ and positive operators $J$ and $K$ such that
+    \[
+        A = UJ = KU
+    \]
+    where the unique positive operators $J$ and $K$ satisfying these equations are defined by
+    \[
+        J \equiv \sqrt{A^\dagger A}
+    \]
+    and
+    \[
+        K \equiv \sqrt{AA^\dagger}
+    \]
+    Moreover, if $A$ is invertible.
+\end{theorem}
+
+The expression $A=JU$ is called the \emph{right polar decomposition} of $A$, and $A=KU$ is called the \emph{left polar decomposition} of $A$.
+
+The singular value decomposition combines the polar decomposition with the spectral theorem.
+
+\begin{corollary}[Singular value decomposition]
+    Let $A$ be a square matrix.
+    Then there exists unitary matrices $U$ and $V$, and a diagonal matrix $D$ with non-negative entries such that
+    \[
+        A = UDV.
+    \]
+    The diagonal elements of $D$ are called the \emph{singular values} of $A$.
+\end{corollary}
+
+\section{The postulates of quantum mechanics}
