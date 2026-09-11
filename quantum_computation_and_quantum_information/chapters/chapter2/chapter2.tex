@@ -174,3 +174,171 @@ The \emph{Cauchy-Schwarz inequality} states that for any vectors $\ket{v}$ and $
 It is an important geometric fact about Hilbert spaces.
 
 \subsection{Eigenvectors and eigenvalues}
+An \emph{eigenvector} of a linear operator $A$ on a vector space $V$ is a non-zero vector $\ket{v}$ such that
+\[
+    A\ket{v} = v \ket{v}
+\]
+where $v \in \mathbb{C}$ is the \emph{eigenvalue} of $A$ corresponding to the eigenvector $\ket{v}$.
+
+Eigenvectors and eigenvalues can be found by solving the \emph{characteristic equation}
+\[
+    c(\lambda) \equiv \det(A - \lambda I) = 0.
+\]
+The solutions of the characteristic equation are the eigenvalues of $A$.
+The \emph{characteristic function} (or \emph{characteristic polynomial}) $c(\lambda)$ does not depend on the specific representation of $A$
+(choice of basis for $V$).
+
+By the fundamental theorem of algebra,
+a polynomial has at least one complex root,
+so every linear operator $A$ has at least one eigenvalue,
+and a corresponding eigenvector.
+
+A \emph{diagonal representation} of a linear operator $A$ on a vector space $V$ is a representation
+\[
+    A = \sum_i \lambda_i \ket{i}\bra{i}
+\]
+where the vectors $\ket{i}$ form an orthonormal set of eigenvectors for $A$,
+with corresponding eigenvalues $\lambda_i$.
+If an operator has a diagonal representation, then it is called \emph{diagonalizable}.
+Diagonal representations are also called \emph{otrhonormal decompositions}.
+When an eigenspace is more than one-dimensional, it is \emph{degenerate}.
+
+\subsection{Adjoints and Hermitian operators}
+Any linear operator $A$ on a Hilberst space $V$ has a unique \emph{adjoint} operator $A^\dagger$ defined by
+\[
+    (\ket{v}, A\ket{w}) = (A^\dagger\ket{v}, \ket{w}).
+\]
+The linear operator $A^\dagger$ is also called the \emph{Hermitian conjugate} of $A$.
+From the definition it follow that $(A^\dagger)^\dagger = A$ and $(AB)^\dagger = B^\dagger A^\dagger$.
+If $\ket{v}$ is a vector, we define $\ket{v}^\dagger = \bra{v}$, therefore $(A\ket{v})^\dagger = \bra{v}A^\dagger$.
+
+The adjoint operator is anti-linear:
+\[
+    (\sum_i a_iA_i)^\dagger = \sum_i a_i^* A_i^\dagger.
+\]
+
+In matrix representation of an operator $A$,
+Hermitian conjugation corresponds to conjugate-transpose the matrix: $A^\dagger = (A^*)^T$.
+
+An operator $A$ is \emph{Hermitian} (or \emph{self-adjoint}) if
+\[
+    A = A^\dagger.
+\]
+
+An important class of Hermitian operators are \emph{projectors}.
+If $W$ is a $k$-dimensional vector subspace of the $d$-dimesional vector space $V$,
+then the \emph{projector} onto $W$ is the linear operator $P: V \to W$ defined by
+\[
+    P = \sum_{i=1}^k \ket{i}\bra{i}
+\]
+where $\{\ket{i}\}$ is an orthonormal basis for $V$.
+$P$ is the \emph{projector} onto the subspace $W$.
+The \emph{orthogonal complement} of $P$ is the projector $Q = I-P$ onto the orthogonal complement of $W$.
+
+An operator A is \emph{normal} if
+\[
+    AA^\dagger = A^\dagger A.
+\]
+An Hermitian operator is also normal.
+
+\begin{theorem}[Spectral decomposition]
+Any normal operator $M$ on a vector space $V$ is diagonal with respect to some orthonormal basis for $V$.
+Conversely, any diagonalizable operator is normal.
+\end{theorem}
+
+An operator $U$ is \emph{unitary} if
+\[
+    UU^\dagger = U^\dagger U = I.
+\]
+$U$ is normal, therefore it has a spectral decomposition.
+Geometrically, unitary operators preserve inner products between vectors
+(and therefore norms, and angles between vectors).
+
+The Pauli matrices are Hermitian and unitary.
+
+A \emph{positive operator} $A$ is defined to be an operator such that for any vector $(\ket{v}, A\ket{v}) \geq 0$.
+If $(\ket{v}, A\ket{v}) > 0 \forall \ket{V} \neq 0$, the operator is \emph{positive definite}.
+A positive operator is Hermitian, and therefore has a spectral decomposition with non-negative eigenvalues.
+
+\subsection{Tensor products}
+The \emph{tensor product} is a way to combine two vector spaces $V$ and $W$ into a new, larger, vector space $V \otimes W$.
+If $V$ is of dimension $m$ and $W$ is of dimension $n$, then $V \otimes W$ is of dimension $mn$.
+The elements of $V \otimes W$ are linear combinations of tensor products of vectors from $V$ and $W$, $\ket{v} \otimes \ket{w}$.
+If $\ket{i}$ and $\ket{j}$ are orthonormal bases for $V$ and $W$, respectively, then $\{\ket{i} \otimes \ket{j}\}$ is an orthonormal basis for $V \otimes W$.
+
+We use the following notations interchangeably:
+\[
+    \ket{v} \otimes \ket{w} \equiv \ket{v}\ket{w} \equiv \ket{v,w} \equiv  \ket{vw}
+\]
+
+The tensor product satisfies the following properties:
+\begin{itemize}
+    \item For an arbitrary scalar $z$ and elements $\ket{v}\in V$ and $\ket{w} \in W$,
+        \[
+            z(\ket{v} \otimes \ket{w}) = (z\ket{v}) \otimes \ket{w} = \ket{v} \otimes (z\ket{w})
+        \]
+    \item For arbitrary $\ket{v_1}$ and $\ket{v_2}$ in $V$ and $\ket{w}$ in $W$,
+        \[
+            (\ket{v_1} + \ket{v_2}) \otimes \ket{w} = \ket{v_1} \otimes \ket{w} + \ket{v_2} \otimes \ket{w}
+        \]
+    \item For arbitrary $\ket{v}$ in $V$ and $\ket{w_1}$ and $\ket{w_2}$ in $W$,
+        \[
+            \ket{v} \otimes (\ket{w_1} + \ket{w_2}) = \ket{v} \otimes \ket{w_1} + \ket{v} \otimes \ket{w_2}
+        \]
+\end{itemize}
+
+If $\ket{v}$ and $\ket{w}$ are vectors in $V$ and $W$,
+and $A$ and $B$ are linear operators on $V$ and $W$,
+then the tensor product of the operators $A \otimes B$ is a linear operator on $V \otimes W$ defined by 
+\[
+    (A \otimes B)(\ket{v} \otimes \ket{w}) = A\ket{v} \otimes B\ket{w}
+\]
+The definition of $A \otimes B$ can be extended to linear combinations of tensor products of vectors in $V$ and $W$ by linearity:
+\[
+    (A \otimes B)\left(\sum_{i} a_{i} \ket{v_i} \otimes \ket{w_i}\right) = \sum_{i} a_{i} A\ket{v_i} \otimes B\ket{w_i}
+\]
+The definition extends to the case where $A\colon V \to V'$ and $B\colon W \to W'$.
+Any arbitrary linear operator $C$ mapping $V \otimes W$ to $V' \otimes W'$ can be expressed as a linear combination of tensor products of linear operators on $V$ and $W$:
+\[
+    C = \sum_i c_i A_i \otimes B_i,
+\]
+where
+\[
+    \left( \sum_i c_i A_i \otimes B_i \right) \ket{v} \otimes \ket{w} = \sum_i c_i A_i\ket{v} \otimes B_i\ket{w}.
+\]
+The inner products on the spaces $V$ and $W$ induce an inner product on the tensor product space $V \otimes W$:
+\[
+    \left( \sum_i a_i \ket{v_i} \otimes \ket{w_i}, \sum_j b_j \ket{v_j'} \otimes \ket{w_j'} \right) = \sum_{i,j} a_i^* b_j \braket{v_i|v_j'}\braket{w_i,|w_j'}
+\]
+
+In matrix representation a tensor product of two matrices $A$ (of size $m \times n$) and $B$ (of size $p \times q$) is called the \emph{Kronecker product},
+and it is defined as follows:
+\[
+A \otimes B =
+\begin{array}{c@{\;}c@{\;}c}
+&
+\underbrace{
+\begin{pmatrix}
+    a_{11}B & a_{12}B & \cdots & a_{1n}B \\
+    a_{21}B & a_{22}B & \cdots & a_{2n}B \\
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1}B & a_{m2}B & \cdots & a_{mn}B
+\end{pmatrix}
+}_{nq}
+&
+\left.\vphantom{
+\begin{pmatrix}
+    a_{11}B & a_{12}B & \cdots & a_{1n}B \\
+    a_{21}B & a_{22}B & \cdots & a_{2n}B \\
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1}B & a_{m2}B & \cdots & a_{mn}B
+\end{pmatrix}
+}\right\} mp
+\end{array}
+\]
+
+The terms $a_{ij}B$ represent $p\times q$ sub-matrices.
+
+The notation $\ket{\psi}^{\otimes k}$ is shorthand for $\ket{\psi} \otimes \cdots \otimes \ket{\psi}$ ($k$ times).
+
+\subsection{Operator functions}
