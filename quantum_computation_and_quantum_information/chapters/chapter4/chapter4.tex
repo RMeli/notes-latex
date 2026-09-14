@@ -1,1 +1,242 @@
 \chapter{Quantum circuits}
+
+\section{Quantum algorithms}
+The promise of quantum computers is to enable new algorithms for the solution of problems that are intractable on classical computers (too many resources).
+There are two broad classes of algorithm that are known to fulfill this promise.
+
+The first class of algorithms is based on Shor's \emph{quantum Fourier transform},
+and includes the factoring and discrete logarithm problem.
+These algorithms provide an exponential speedup over the best known classical algorithms.
+
+The second class of algorithms is based on Grover's algorithm for performing \emph{quantum searching}.
+These provide a quadratic speedup over the best known classical algorithms for searching an unstructured database.
+
+Coming up with good quantum algorithms appears to be a very difficult task.
+Algorithm design is difficult,
+and quantum algorithms need to be better than the best known classical algorithms to be useful.
+
+\section{Single qubit operations}
+A single qubit is a vector $\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$, parametrized by two complex numbers $\alpha$ and $\beta$ satisfying $|\alpha|^2 + |\beta|^2 = 1$.
+Operations on a qubit must preserve this norm, and thus are described by $2 \times 2$ unitary matrices.
+
+The Pauli matrices are the following:
+\[
+    X = \begin{pmatrix}
+        0 & 1 \\
+        1 & 0
+    \end{pmatrix},\quad
+    Y = \begin{pmatrix}
+        0 & -i \\
+        i & 0
+    \end{pmatrix},\quad
+    Z = \begin{pmatrix}
+        1 & 0 \\
+        0 & -1
+    \end{pmatrix}.
+\]
+
+Three other quantum gates are important for quantum computing: the Hadamard gate $H$, the phase gate $S$, and the $\pi/8$ gate $T$.
+\[
+    H = \frac{1}{\sqrt{2}}\begin{pmatrix}
+        1 & 1 \\
+        1 & -1
+    \end{pmatrix},\quad
+    S = \begin{pmatrix}
+        1 & 0 \\
+        0 & i
+    \end{pmatrix},\quad
+    T = \begin{pmatrix}
+        1 & 0 \\
+        0 & e^{i\pi/4}
+    \end{pmatrix}.
+\]
+
+The Hadamard gate can be written in term of the Pauli matrices as
+\[
+    H = \frac{X + Z}{\sqrt{2}}.
+\]
+
+The Pauli matrices give raise to the \emph{rotation operators} about the $\hat{x}$, $\hat{y}$, and $\hat{z}$ axes when exponentiated:
+\[
+    R_x(\theta) 
+    = e^{-i\theta X/2}
+    = \cos\left(\frac{\theta}{2}\right)I - i\sin\left(\frac{\theta}{2}\right)X
+    = \begin{pmatrix}
+        \cos\frac{\theta}{2} & -i\sin\frac{\theta}{2} \\
+        -i\sin\frac{\theta}{2} & \cos\frac{\theta}{2}
+    \end{pmatrix},
+\]
+\[
+    R_y(\theta)
+    = e^{-i\theta Y/2}
+    = \cos\left(\frac{\theta}{2}\right)I - i\sin\left(\frac{\theta}{2}\right)Y
+    = \begin{pmatrix}
+        \cos\frac{\theta}{2} & -\sin\frac{\theta}{2} \\
+        \sin\frac{\theta}{2} & \cos\frac{\theta}{2}
+    \end{pmatrix},
+\]
+\[
+    R_z(\theta)
+    = e^{-i\theta Z/2}
+    = \cos\left(\frac{\theta}{2}\right)I - i\sin\left(\frac{\theta}{2}\right)Z
+    = \begin{pmatrix}
+        e^{-i\theta/2} & 0 \\
+        0 & e^{i\theta/2}
+    \end{pmatrix}.
+\]
+If $\hat{n} = (n_x, n_y, n_z)$ is a real unit vector in three dimensions,
+a rotation by $\theta$ about the axis $\hat{n}$ is given by
+\[
+    R_{\hat{n}}(\theta) = e^{-i\theta \hat{n} \cdot \vec{\sigma}/2}
+    = \cos\left(\frac{\theta}{2}\right)I - i\sin\left(\frac{\theta}{2}\right)\hat{n} \cdot \vec{\sigma}
+\]
+where $\vec{\sigma} = (X, Y, Z)$ is the vector of Pauli matrices.
+
+An arbitrary unitary operator on a single qubit can be written in many ways as a combination of rotations,
+together with a global phase shift on the qubit.
+
+\begin{theorem}[$Z$-$Y$ decomposition for a single qubit]
+    Suppose U is an unitary operation on a signle qubit.
+    Then there exist real numbers $\alpha$, $\beta$, $\gamma$, and $\delta$ such that
+    \[
+        U = e^{i\alpha} R_z(\beta) R_y(\gamma) R_z(\delta).
+    \]
+\end{theorem}
+
+\begin{corollary}\label{corollary:zy-decomposition}
+    Suppose $U$ is a unitary gate on a single qubit.
+    Then there exist unitary operators $A$, $B$, $C$ on a single qubit such that $ABC = I$ and $U = e^{i\alpha} A X B X C$ for some real number $\alpha$.
+\end{corollary}
+
+The following circuit identities are useful for simplifying quantum circuits:
+\[
+    HXH=Z, \quad HYH=-Y, \quad HZH=X.
+\]
+
+\subsection{Controlled operations}
+The prototypical controlled operation is the controlled-NOT (CNOT) gate.
+The two inputs of the CNOT gate are the \emph{control qubit} and the \emph{target qubit}.
+In the computational basis, the action of the CNOT gate is given by $\ket{c, t} \to \ket{c, t \oplus c}$.
+The matrix representation of the CNOT gate is
+\[
+    U_\text{CN} = \begin{pmatrix}
+        1 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 \\
+        0 & 0 & 0 & 1 \\
+        0 & 0 & 1 & 0
+    \end{pmatrix}.
+\]
+The circuit representation of the CNOT gate is the following:
+\[
+    \Qcircuit @C=1em @R=2em {
+        & \ctrl{1} & \qw \\
+        & \targ & \qw
+    }
+\]
+
+A \emph{controlled-U} operation is a two-qubit operation (with control and target qubits)
+that applies $U$ if the control qubit is set: $\ket{c}\otimes\ket{t} \to \ket{c}\otimes U\ket{t}$.
+The circuit representation of a controlled-U operation is the following:
+\[
+    \Qcircuit @C=1em @R=2em {
+        & \ctrl{1} & \qw \\
+        & \gate{U} & \qw
+    }
+\]
+
+The controlled-$U$ gate can be implemented using CNOT gates and single qubit operations.
+Applying a phase shift to the target qubit is done with the following circuit:
+\[
+    \Qcircuit @C=1em @R=2em {
+        & \ctrl{1} & \qw \\
+        & \gate{
+            \begin{pmatrix}
+            e^{i\alpha} & 0 \\
+            0 & e^{i\alpha}
+            \end{pmatrix}
+        } & \qw
+    }
+    =
+    \Qcircuit @C=1em @R=2em {
+        & \gate{
+            \begin{pmatrix}
+            1 & 0 \\
+            0 & e^{i\alpha}
+            \end{pmatrix}
+        } & \qw \\
+        & \qw & \qw
+    }
+\]
+This corresponds to the $e^{i\alpha}$ factor in Corollary~\ref{corollary:zy-decomposition},
+where $X$ is the NOT gate.
+Using a CNOT gate instead of X,we have the following.
+If the control qubit is set, $e^{i\alpha}AXBXC=U$ is applied to the target qubit.
+If the control qubit is not set, $ABC=I$ is applied to the target qubit.
+Therefore, the following circuit implements a controlled-$U$ operation:
+\[
+    \Qcircuit @C=1em @R=2em {
+        & \ctrl{1} & \qw \\
+        & \gate{U} & \qw
+    }
+    =
+    \Qcircuit @C=1em @R=2em {
+        & \qw & \ctrl{1} & \qw & \ctrl{1} & \gate{\begin{pmatrix} 1 & 0 \\ 0 & e^{i\alpha} \end{pmatrix}} & \qw \\
+        & \gate{C} & \targ & \gate{B} & \targ & \gate{A} & \qw
+    }
+\]
+
+More generally, a controlled-$U$ operation can be implemented with multiple control and target qubits.
+Suppose we have $n+k$ qubits, and $U$ a $k$-qubit unitary operator.
+We define the controlled operation $C^n(U)$ by the equation
+\[
+    C^n(U)\ket{x_1\cdots x_n}\ket{\psi} = \ket{x_1\cdots x_n}U^{x_1\cdots x_n}\ket{\psi}
+\]
+where $x_1\cdots x_n$ in the exponent of $U$ means the product of the bits $x_1,\ldots,x_n$.
+The operator $U$ is applied to the last $k$ qubits if the fist $n$ qubits are all equal to one, otherwise nothing is done.
+The circuit notation for $C^n(U)$ is the following:
+\[
+    \Qcircuit @C=1em @R=2em {
+        & \ctrl{2} & \qw \\
+        & \ctrl{1} & \qw \\
+        & \multigate{1}{U} & \qw \\
+        & \ghost{U} & \qw \\
+    }
+\]
+
+Suppose $U$ is a single qubit unitary operator, and $V$ is an unitary operator so that $V^2 = U$.
+Then the operation $C^2(U)$ can be implemented using the following circuit:
+\[
+    \Qcircuit @C=1em @R=2em {
+        & \ctrl{2} & \qw \\
+        & \ctrl{1} & \qw \\
+        & \gate{U} & \qw \\
+    }
+    =
+    \Qcircuit @C=1em @R=2em {
+        & \qw & \ctrl{1} & \qw & \ctrl{1} & \ctrl{2} & \qw \\
+        & \ctrl{1} & \targ & \ctrl{1} & \targ & \qw & \qw \\
+        & \gate{V} & \qw & \gate{V^\dagger} & \qw & \gate{V} & \qw \\
+    }
+\]
+
+The Toffoli gate is an especially important special case of $C^2(U)$, where $U$ is the NOT gate $X$: $C^2(X)$.
+Defining $V = (1-i)(I + iX)/2$ and noting that $V^2 = X$,
+we see that the circuit above implements the Toffoli gate using only one and two quibit operations.
+One and two qubit reversible gates are sufficient to implement universal computation.
+By contrast, one and two bits classical reversible gates are not sufficient to implement the Toffoli gate.
+
+In fact, any unitary operation can be composed to an arbitrary good approximation from just the Hadamard, pase, controlled-NOT, and $\pi/8$ gates.
+The Toffoli gate can be implemented using only these gates as follows:
+\[
+    \Qcircuit @C=1em @R=2em {
+        & \ctrl{2} & \qw \\
+        & \ctrl{1} & \qw \\
+        & \targ & \qw \\
+    }
+    =
+    \Qcircuit @C=.5em @R=2em {
+        & \qw & \qw & \qw & \ctrl{2} & \qw & \qw & \qw & \ctrl{2} & \qw & \ctrl{1} & \qw & \ctrl{1} & \gate{T} & \qw \\
+        & \qw & \ctrl{1} & \qw & \qw & \qw & \ctrl{1} & \qw & \qw & \gate{T^\dagger} & \targ & \gate{T^\dagger} & \targ & \gate{S} & \qw \\
+        & \gate{H} & \targ & \gate{T^\dagger} & \targ & \gate{T} & \targ & \gate{T^\dagger} & \targ & \gate{T} & \gate{H} & \qw & \qw & \qw & \qw \\
+    }
+\]
