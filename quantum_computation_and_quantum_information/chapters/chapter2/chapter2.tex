@@ -448,3 +448,411 @@ The singular value decomposition combines the polar decomposition with the spect
 \end{corollary}
 
 \section{The postulates of quantum mechanics}
+
+\subsection{State space}
+
+\begin{postulate}[State space]{1}
+    Associated to any isolated physical system is a complex vector space with inner product
+    (a Hilbert space)
+    known as the \emph{state space} of the system.
+    The system is completely described by its \emph{state vector}, 
+    which is a unit vector in the system's state space.
+\end{postulate}
+
+A \emph{qubit} has a two-dimensional state space.
+If $\ket{0}$ and $\ket{1}$ are orthonormal basis vectors for the state space of a qubit,
+an arbitrary state in sthe state space can be written as
+\[
+    \ket{\psi} = \alpha\ket{0} + \beta\ket{1}
+\]
+where $\alpha, \beta \in \mathbb{C}$ and $\braket{\psi|\psi} = \abs{\alpha}^2 + \abs{\beta}^2 = 1$ (\emph{normalization condition}).
+
+We say that the linear combination $\sum_i \alpha_i \ket{\psi_i}$ is a \emph{superposition} of the states $\ket{\psi_i}$ with \emph{amplitude} $\alpha_i$ for the state $\ket{\psi_i}$.
+
+\subsection{Evolution}
+
+\begin{postulate}[Evolution]{2}
+    The evolution of a \emph{closed} quantum system is described by a \emph{unitary transformation}.
+    That is,
+    the state $\ket{psi}$ of the system at time $t$ is related to the state $\ket{\psi'}$ of the system at time $t'$ by a unitary operator $U$ which depends only on the times $t$ and $t'$:
+    \[
+        \ket{\psi'} = U\ket{\psi}.
+    \]
+\end{postulate}
+
+Postulate 2 requires that the system being described is closed,
+meaning that it does not interact with other systems (including the environment).
+
+A more refined version of Postulate 2 describes the evolution of a quantum system in \emph{continuous time}.
+
+\begin{postulate}[Schrödinger equation]{2'}
+    The time evoolution of the state of a closed quantum system is described by the \emph{Schrödinger equation}
+    \[
+        i\hbar \frac{d}{dt}\ket{\psi(t)} = H\ket{\psi(t)},
+    \]
+    where $\hbar$ is the \emph{Planck's constant} and $H$ is a fixed Hermitian operator known as the \emph{Hamiltonian} of the closed system.
+\end{postulate}
+
+If we know the Hamiltonian of a system,
+then we understand its dynamics completely (at least in principle).
+
+Because the Hamiltonian is a Hermitian operator it has a spectral decomposition
+\[
+    H = \sum_i E_i \ket{E_i}\bra{E_i}
+\]
+with eigenvalues $E_i$ and corresponding normalized eigenvectors $\ket{E_i}$.
+The states $\ket{E_i}$ are called \emph{energy eigenstates}
+(or \emph{stationary states})
+and $E_i$ is the \emph{energy} of the system in the state $\ket{E_i}$.
+The lowest energy is known as the \emph{ground state energy} for the system,
+and the corresponding energy eigenstate is called the \emph{ground state}.
+
+\subsection{Quantum measurement}
+
+\begin{postulate}[Measurement]{3}
+    Quantum measurements are described by a collection $\{M_m\}$ of \emph{measurement operators}.
+    These are operators acting on the state space of the system being measured.
+    The index $m$ refers to the measurement outcomes that may occur in the measurement.
+    If the state of the quantum system is $\ket{\psi}$ immediately before the measurement,
+    then the probability that result $m$ occurs is given by
+    \[
+        p(m) = \braket{\psi|M_m^\dagger M_m|\psi}
+    \]
+    and the state of the system after the measurement is
+    \[
+        \frac{M_m\ket{\psi}}{\sqrt{p(m)}}.
+    \]
+    The measurement operators satisfy the \emph{completeness equation}
+    \[
+        \sum_m M_m^\dagger M_m = I.
+    \]
+    The completeness equation expresses the fact that probabilities sum to one.
+\end{postulate}
+
+For a single qubit measurement, the possible outcomes are $0$ and $1$,
+and the measurement operators are $M_0 = \ket{0}\bra{0}$ and $M_1 = \ket{1}\bra{1}$.
+The measurement operators are Hermitian ($M_m^\dagger = M_m$),
+and satisfy $M_0^2 = M_0$ and $M_1^2 = M_1$ (they are \emph{idempotent}).
+If the state being measured is $\ket{psi} = \alpha\ket{0} + \beta\ket{1}$,
+then the probability of outcome $0$ is $p(0) = \braket{\psi|M_0^\dagger M_0|\psi}  = \abs{\alpha}^2$,
+and the probability of outcome $1$ is $p(1) = \braket{\psi|M_1^\dagger M_1|\psi} = \abs{\beta}^2$.
+The state after measurement in the two cases is therefore $a\ket{0}/\abs{\alpha}\equiv\ket{0}$ and $\beta\ket{1}/\abs{\beta}\equiv\ket{1}$,
+respectively.
+
+\subsection{Distinguishing quantum states}
+
+Alice choses a state $\ket{\psi_i}$ ($1\leq i \leq n$) from a fixed set of states known to both Alice and Bob.
+She sends the state $\ket{\psi_i}$ to Bob,
+whose task is to determine $i$.
+
+Suppose the states $\ket{\psi_i}$ are orthonormal.
+Then Bob can do a quantum measurement to \emph{distinguish} the states.
+Define the measurement operators $M_i = \ket{\psi_i}\bra{\psi_i}$,
+and let $M_0 = I - \sum_{i\neq 0} M_i$.
+These operators satisfy the completness relation,
+and if the state $\ket{\psi_i}$ is prepared,
+then $p(i) = \braket{\psi_i|M_i^\dagger M_i|\psi_i} = \braket{\psi_i|M_i|\psi_i} = 1$,
+so the result $i$ occurs with certainty.
+Thus, it is possible to reliably distinguish the orthonormal states $\ket{\psi_i}$.
+
+However, if the states $\ket{\psi_i}$ are not orthonormal,
+then there is \emph{no quantum measurement capable of distinguishing the states}.
+
+\subsection{Projective measurements}
+In many applications of quantum computation and quantum information,
+we are concerned with a special class of measurements called \emph{projective measurements}.
+Projective measurements are equivalent to the general measurement postulate,
+when they are augmented with the ability to perform unitary transformations
+(as described in Postulate 2).
+
+
+A projective measurement is described by an observable, $M$,
+a Hermitian operator on the state space of the system being observed.
+The observable has a spectral decomposition
+\[
+    M = \sum_m m P_m,
+\]
+where $P_m$ is the projector onto the eigenspace of $M$ with eigenvalue $m$.
+The possible outcomes of the measurement correspond to the eigenvalues, $m$, of the observable $M$.
+Upon measuring the state $\ket{\psi}$, the probability of obtaining outcome $m$ is given by
+\[
+    p(m) = \braket{\psi|P_m|\psi}.
+\]
+Given that the outcome $m$ occurred, the state of the quantum system immediately after the measurement is
+\[
+    \frac{P_m\ket{\psi}}{\sqrt{p(m)}}.
+\]
+
+Postulate 3 reduces to a projective measurement if,
+in addition to satisfying the completeness relation $\sum_m M_m^\dagger M_m = I$,
+the measurement operators $M_m$ are orthogonal projectors,
+that is,
+they are Hermitian ($M_m^\dagger = M_m$),
+$M_mM_{m'} = \delta_{mm'}M_m$.
+
+The average value of a projective measurement is given by
+\[
+    \avg{M} = \sum_m mp(m) = \braket{\psi|M|\psi}
+\]
+The standard deviation of a projective measurement is given by
+\[
+    \sigma_M = \sqrt{\braket{\psi|M^2|\psi} - \braket{\psi|M|\psi}^2}
+\]
+
+The \emph{Heisenberg uncertainty principle} states that for any two observables $A$ and $B$,
+\[
+    \sigma_A \sigma_B \geq \frac{1}{2}\abs{\braket{\psi|[A,B]|\psi}}.
+\]
+The correct interpretation of the Heisenberg uncertainty principle is that if we prepare a large number of quantum systems in identical states,
+$\ket{\psi}$,
+and then perform measurements of $A$ on some of those,
+and $B$ on the others,
+then the standard deviation $\sigma_A$ of the measurements of $A$ and the standard deviation $\sigma_B$ of the measurements of $B$ satisfy the inequality above.
+
+Rather than giving an observable $M$ to describe a projective measurement,
+often it is given a set of orthogonal projectors $\{P_m\}$ that satisfy the relations $P_mP_{m'} = \delta_{mm'}P_m$ and $\sum_m P_m = I$.
+The corresponding observable implicit in this is $M = \sum_m m P_m$.
+To ``measure in a basis $\ket{m}$'',
+where $\ket{m}$ form an orthonormal basis,
+means to perform a projective measurement with projectors $P_m = \ket{m}\bra{m}$.
+
+\subsection{POVM measurements}
+\graffito{In many instances we are only interested with the measurement statistics,
+ and not in the measurement outcome. The POVM formalism will therefore be used extensively in what follows.}
+When the post-measurement state of the system is not important,
+the mathematical tool known as \emph{POVM (Positive Operator-Valued Measure) formalism} is well adapted for the analysis of the measurement.
+It is a simple consequence of Postulate 3.
+
+Suppose a measurement described by measurement operators $\{M_m\}$ is performed upon a quantum system in the state $\ket{\psi}$. 
+Then the probability of outcome $m$ is given by $p(m) = \braket{\psi|M_m^\dagger M_m|\psi}$.
+Suppose we define
+\[
+    E_m = M_m^\dagger M_m.
+\]
+Then from Postulate 3, $E_m$ is a positive operator such that $\sum_m E_m = I$ and $p(m) = \braket{\psi|E_m|\psi}$.
+Therefore, the set of operators $\{E_m\}$ are sufficient to determine the probabilities of the outcomes of the measurement.
+The operators $E_m$ are called \emph{POVM elements} associated with the measurement.
+The complete set $\{E_m\}$ is known as a \emph{POVM}.
+
+It is convenient to define a POVM to be any set of operators such that
+
+\begin{itemize}
+    \item each operator $E_m$ is positive, and
+    \item the completeness relation $\sum_m E_m = I$ is satisfied.
+\end{itemize}
+
+\subsection{Phase}
+Consider $e^{i\theta}\ket{\psi}$, where $\ket{\psi}$ is a state vector and $\theta$ is a real number.
+$e^{i\theta}\ket{\psi}$ is equal to $\ket{\psi}$ up to the \emph{global phase} $e^{i\theta}$.
+The \emph{statistics of measurement} predicted for these two states are identical:
+$\braket{\psi|e^{-i\theta}M_m^\dagger M_m e^{i\theta}|\psi} = \braket{\psi|M_m^\dagger M_m|\psi}$
+
+Consider $\ket{\psi} = a\ket{0} + b\ket{1}$.
+Two amplitudes $a$ and $b$ \emph{differ by a relative phase} if there is a real number $\theta$ such that $a = e^{i\theta}b$.
+More generally,
+two states are said to \emph{differ by a relative phase} in some basis if each of the amplitudes in that basis is related by such a phase factor.
+
+Relatives phases are a basis-dependent concept, unlike global phases.
+States which differ only by relative phases in some basis give rise to physically observable differences in measurement statistics.
+
+\subsection{Composite systems}
+\begin{postulate}[Composite systems]{4}
+    The state space of a composite physical system is the tensor product of the state spaces of the component physical systems.
+    Moreover, if we have system numbered \num{1}  through $n$, and system number $i$ is prepared in the state $\ket{\psi_i}$,
+    then the joint state of the total system is $\ket{\psi_1} \otimes \cdots \otimes \ket{\psi_n}$.
+\end{postulate}
+
+Postulate 4 enables to define \emph{entanglement} in a composite quantum system,
+which is a uniquely quantum phenomenon.
+
+Consider a two-qubit state
+\[
+    \ket{\psi} = \frac{\ket{0}\otimes\ket{0} + \ket{1}\otimes\ket{1}}{\sqrt{2}} = \frac{\ket{00} + \ket{11}}{\sqrt{2}}.
+\]
+The state has the property that there are no single-qubit states $\ket{a}$ and $\ket{b}$ such that $\ket{\psi} = \ket{a}\otimes\ket{b}$.
+
+We say that a state of a composite system that can't be written as a product oif state of its components systems is an \emph{entangled} state.
+Entangled states play a crucial role in quantum computation and quantum information.
+
+\section{Superdense coding}
+Suppose Alice is in possession of two classical bits of information which she wants to send to Bob.
+Suppose that Alice and Bob share a pair of qubits in the entangled state
+\[
+    \ket{\psi} = \frac{\ket{00} + \ket{11}}{\sqrt{2}}.
+\]
+Alice is initially in possession of the first qubit, and Bob is in possession of the second qubit.
+By sending the single qubit in her possession to Bob, alice can communicate two bits of classical information to Bob.
+
+If she wishes to send \texttt{00} she does nothing to her qubit.
+If she wishes to send \texttt{01} she applies the phase flip gate $Z$ to her qubit.
+If she wishes to send \texttt{10} she applies the NOT gate $X$ to her qubit.
+If she wishes to send \texttt{11} she applies the $iY$ gate to her qubit.
+The four states are
+\[
+    \frac{\ket{00} + \ket{11}}{\sqrt{2}}, \quad \frac{\ket{00} - \ket{11}}{\sqrt{2}}, \quad \frac{\ket{01} + \ket{10}}{\sqrt{2}}, \quad \frac{\ket{01} - \ket{10}}{\sqrt{2}}
+\]
+These four states are the \emph{Bell basis} (or \emph{Bell states}, or \emph{EPR pairs}).
+The \emph{Bell basis} is an orthonormal basis for the two-qubit state space,
+therefore they can distinguished by an appropriate quantum measurement.
+
+Alice sends her qubit to Bob, who now has both qubits.
+By performing a measurement in the Bell basis, Bob can determine which of the four states he has received,
+and therefore the associated two bits of classical information that Alice wanted to communicate.
+
+\section{The density operator}
+An alternative formulation of quantum mechanics to the state vector formalism is the \emph{density operator} (or \emph{density matrix}) formalism.
+Where this formalism is really useful is in the description of \emph{individual subsystems} of composite quantum systems.
+
+\subsection{Ensembles of quantum states}
+Suppose a quantum system is in one of a number of states $\ket{\psi_i}$ with probability $p_i$.
+We call the set $\{p_i, \ket{\psi_i}\}$ an \emph{ensemble} of \emph{pure states}.
+The \emph{density operator} of the system is defined by
+\[
+    \rho = \sum_i p_i \ket{\psi_i}\bra{\psi_i}.
+\]
+All postulates of quantum mechanics can be re-formulated in term of the density operator.
+
+A quantum system whose state $\ket{\psi}$ is known exactly is said to be in a \emph{pure state}.
+For a pure state, the density operator is simply $\rho = \ket{\psi}\bra{\psi}$.
+Otherwise, $\rho$ is in a \emph{mixed state};
+it is a mixture of pure states in the ensemble for $\rho$.
+A pure state satisfies $\tr{\rho^2} = 1$, while a mixed state satisfies $\tr{\rho^2} < 1$.
+
+A system can be prepared in the state $\rho_i$ with probability $p_i$.
+The density matrix of such system is
+\[
+    \rho = \sum_i p_i \rho_i = \sum_{ij} p_i p_{ij} \ket{\psi_{ij}}\bra{\psi_{ij}} = \sum_i p_i \rho_i.
+\]
+We say that $\rho$ is a mixture of the states $\rho_i$ with probability $p_i$.
+A mixture of states comes up in the analysis of quantum noise,
+where the effect of the noise is to introduce ignorance into our knowledge of the quantum state of the system.
+
+\subsection{General properties of the density operator}
+The class of operators that are density operators are characterized by the following theorem.
+
+\begin{theorem}[Characterization of densiy operators]
+    An operator $\rho$ is the density operator associated to the ensemble $\{p_i, \ket{\psi_i}\}$ if and only if it satisfies the following conditions:
+    \begin{enumerate}
+        \item $\rho$ has trace equal to one: $\tr(\rho) = 1$ (trace condition), and
+        \item $\rho$ is positive: $\braket{\psi|\rho|\psi} \geq 0$ for all $\ket{\psi}$ (positivity condition).
+    \end{enumerate}
+\end{theorem}
+
+We can define a density operator to be a positive operator $\rho$ with trace equal to one.
+Using this definition,
+it is possible to re-formulate the postulates of quantum mechanics in the density operator picture.
+
+\begin{postulate}{1}
+    Associated to any isolated physical system is a complex vector space with inner product
+    (a Hilbert space) known as the \emph{state space} of the system.
+    The system is completely described by its \emph{density operator},
+    which is a positive operator $\rho$ with trace equal to one,
+    acting on the state space of the system.
+    If a quantum system is in the state $\rho_i$ with probability $p_i$,
+    then the density operator of the system is
+    \[
+        \rho = \sum_i p_i \rho_i.
+    \]
+\end{postulate}
+
+\begin{postulate}{2}
+    The evolution of a \emph{closed} quantum system is described by a \emph{unitary transformation}.
+    That is, the state $\rho$ of the system at time $t$ is related to the state $\rho;$ of the system at time $t'$ by a unitary operator $U$ which depends only on the times $t$ and $t'$:
+    \[
+        \rho' = U\rho U^\dagger.
+    \]
+\end{postulate}
+
+\begin{postulate}{3}
+    Quantum measurements are described by a collection $\{M_m\}$ of \emph{measurement operators}.
+    These are operators acting on the state space of the system being measured.
+    The index $m$ refers to the measurement outcomes that may occur in the measurement.
+    If the state of the quantum system is $\rho$ immediately before the measurement,
+    then the probability that result $m$ occurs is given by
+    \[
+        p(m) = \tr(M_m^\dagger M_m \rho)
+    \]
+    and the state of the system after the measurement is
+    \[
+        \frac{M_m\rho M_m^\dagger}{p(m)}.
+    \]
+    The measurement operators satisfy the \emph{completeness equation}
+    \[
+        \sum_m M_m^\dagger M_m = I.
+    \]
+\end{postulate}
+
+\begin{postulate}{4}
+    The state space of a composite physical system is the tensor product of the state spaces of the component physical systems.
+    Moreover, if we have system numbered \num{1}  through $n$, and system number $i$ is prepared in the state $\rho_i$,
+    then the joint state of the total system is $\rho_1 \otimes \cdots \otimes \rho_n$.
+\end{postulate}
+
+The eigenvectors and eigenvalues of a density matrix just indicate one of the many possible ensembles that may give rise to a specific density matrix,
+and there is no reason to suppose it is an especially privileged ensemble.
+
+An arbitrary density matrix for a mixed state qubit may be written as
+\[
+    \rho = \frac{I + \vec{r} \cdot \vec{\sigma}}{2},
+\]
+where $\vec{r}$ is a real three-dimensional vector such that $\norm{\vec{r}} \leq 1$.
+This vector is known as \emph{Bloch vector}.
+A state $\rho$ is pure if and only if $\norm{\vec{r}} = 1$.
+
+\subsection{The reduced density operator}
+Suppose we have physical systems A and B, whose state is described by a density operator $\rho^{AB}$.
+The \emph{reduced density operator} $\rho^A$ of system A is defined by
+\[
+    \rho^A = \tr_B(\rho^{AB}),
+\]
+where $\tr_B$ is the \emph{partial trace} over system B.
+
+The partial trace is defined by:
+\[
+    \tr_B(\ket{a_1}\bra{a_2} \otimes \ket{b_1}\bra{b_2}) = \ket{a_1}\bra{a_2} \tr(\ket{b_1}\bra{b_2}) = \braket{b_2|b_1}\ket{a_1}\bra{a_2},
+\]
+where $\ket{a_1}$ and $\ket{a_2}$ are states of system A, and $\ket{b_1}$ and $\ket{b_2}$ are states of system B.
+
+The reduced density operator produces the correct measurement statistics for measurements made on system A alone.
+
+If the joint state of a system is a pure state,
+the reduced density operator of a subsystem may be a mixed state.
+The fact that the joint state of a system can be completely known,
+yet a subsystem be in mixed states,
+is another hallmark of quantum entanglement.
+
+\section{The Schmidt decomposition and purifications}
+\begin{theorem}[Schmidt decomposition]
+    Suppose $\ket{\psi}$ is a pure state of a composite system, AB.
+    Then there exist orthonormal states $\ket{i_A}$ for system A,
+     and orthonormal states $\ket{i_B}$ for system B such that
+     \[
+        \ket{\psi} = \sum_i \lambda_i \ket{i_A} \otimes \ket{i_B},
+     \]
+\end{theorem}
+where $\lambda_i$ are non-negative real numbers satisfying $\sum_i \lambda_i^2 = 1$,
+known as \emph{Schmidt coefficients}.
+The bases $\{\ket{i_A}\}$ and $\{\ket{i_B}\}$ are known as \emph{Schmidt bases} for systems A and B, respectively,
+and the number of non-zero values $\lambda_i$ is known as the \emph{Schmidt number} for the state $\ket{\psi}$.
+
+Let $\ket{\psi}$ be a pure state of a composite system, AB.
+Then, by the Schmidt decomposition, $\rho^A = \sum_i \lambda_i^2 \ket{i_A}\bra{i_A}$ and $\rho^B = \sum_i \lambda_i^2 \ket{i_B}\bra{i_B}$,
+so the eigenvalues of $\rho^A$ and $\rho^B$ are identical,
+namely $\lambda_i^2$ for both density operators.
+Many important properties of quantum systems are completely determined by the eigenvalues of the reduced density operator of the system,
+so for a pure state of a composite system such properties will be the same for both subsystems.
+
+Suppose we have a state $\rho^A$ of a quantum system A.
+It is possible to introduce another system AR such that $\rho^A=\tr_R(\ket{\psi^{AR}}\bra{\psi^{AR}})$.
+That is, the pure state $\ket{\psi^{AR}}$ of the composite system AR reduces to $\rho^A$ when we look at system A alone.
+This is a purely mathematical procedure, known as \emph{purification},
+which allows to associate pure states with mixed states.
+R is called a \emph{reference system} (which has not physical significance).
+Purification can be done for any state.
+
+There is a close relationship between the Schmidt decomposition and purification:
+the procedure used to purify the mixed state of system $A$ is to define a pure state whose Schmidt basis for system A is just the basis in which the mixed state is diagonal,
+with the Schmidt coefficient being the square root of the eigenvalues of the density operator being purified:
+\[
+    \ket{AR} = \sum_i \sqrt{\lambda_i} \ket{i_A} \otimes \ket{i_R}.
+\]

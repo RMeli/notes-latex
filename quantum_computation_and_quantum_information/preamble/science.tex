@@ -1,15 +1,24 @@
 % Mathematics
 \usepackage{mathtools}
+\usepackage{amsthm}
 
     \newcommand{\graph}[0]{\mathcal{G}}
 
     \DeclarePairedDelimiter\abs{\lvert}{\rvert}
     \DeclarePairedDelimiter\norm{\lVert}{\rVert}
+    \DeclarePairedDelimiter\avg{\langle}{\rangle}
 
     \newtheorem{theorem}{Theorem}[chapter]
     \newtheorem{corollary}{Corollary}[chapter]
 
+    \newtheorem{postulateinner}{Postulate}
+    \newenvironment{postulate}[2][]
+        {\renewcommand{\thepostulateinner}{#2}%
+        \postulateinner[#1]}
+        {\endpostulateinner}
+
     \DeclareMathOperator{\tr}{tr}
+
 
 \usepackage{siunitx}
 \usepackage{qcircuit}
