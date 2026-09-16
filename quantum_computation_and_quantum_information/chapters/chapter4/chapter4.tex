@@ -283,3 +283,295 @@ An open circle notation indicate conditioning on the qubit set to zero, while a 
 \]
 
 \section{Measurement}
+Measurement in quantum circuits is denoted by a meter symbol,
+which represents a projective measurement in the computational basis.
+It is conventional to not use any special symbol for more general measurements,
+they  can always be represented by unitary transformations with ancilla qubits,
+followed by projective measurements.
+
+There are two important principles about measurement in quantum circuits:
+\begin{description}
+    \item[Principle of deferred measurement] Measurements can always be moved from an intermediate stage of a quantum circuit to the end of the circuit;
+        if the measruement results are used at any stage of the circuit,
+        then the classically controlled operations can be replaced by conditional quantum operations.
+    \item[Principle of implicit measurement] Without loss of generality,
+        any unterminated quantum wires (qubits with are not measured) at the end of a quantum circuit may be assumed to be measured.
+\end{description}
+
+Quantum measurements are often performed as an intermediate step in a quantum circuit,
+and the measurement results are used to conditionally control subsequent quantum gates.
+This was the case, for example, in the quantum teleportation circuit.
+The principle of deferred measurement, applied to quantum teleportation, results in the following circuit:
+\[
+    \Qcircuit @C=1em @R=2em {
+        \lstick{\ket{\psi}} & \qw & \ctrl{1} & \gate{H} & \qw & \ctrl{2} & \meter  \\
+        \lstick{} & \qw & \targ & \qw & \ctrl{1} & \qw & \meter \\
+        \lstick{} & \qw & \qw & \qw & \gate{X} & \gate{Z} & \qw & \rstick{\ket{\psi}} \qw 
+        \inputgroupv{2}{3}{0.6em}{1.75em}{\ket{\beta_{00}}}  \\ 
+    }
+\]
+
+A consequence of the principle of deferred measurement is that \emph{measurements commute with controls}:
+\[
+    \Qcircuit @C=1em @R=2em {
+        & \qw & \ctrl{1} & \meter & \qw \\
+        & \qw & \gate{U} & \qw & \qw \\
+    }
+    =
+    \Qcircuit @C=1em @R=2em {
+        & \qw & \meter & \cw & \\
+        & \qw & \qw & \gate{U} \cwx[-1] & \qw \\
+    }
+    \equiv
+    \Qcircuit @C=1em @R=2em {
+        & \qw & \meter & \\
+        & \qw & \gate{U} \cwx[-1] & \qw \\
+    }
+\]
+
+Consider a circuit containing just two qubit, with the first qubit measured at the end of the circuit.
+The principle of implicit measurement originates from the fact that the reduced density matrix of the first qubit is not affected by performing a measurement on the second qubit.
+
+\section{Universal quantum gates}
+In classical computation,
+a small set of gates (e.g. AND, OR, NOT),
+said to be \emph{universal},
+can be used to compute any arbitrary classical function.
+
+In quantum computation,
+a set of gates is said to be \emph{universal for quantum computation} if any unitary operation may be approximated to arbitrary accuracy by a quantum circuit involving only those gates.
+
+\subsection{Two-level unitary gates are universal}
+Arbitrary unitary operator may be expressed \emph{exactly} as a product of unitary operators tat each acts non-trivially only on a subspace spanned by two computational basis states.
+A unitary matrix $U$ can be decomposed into a product of \emph{two-level unitary matrices}.
+
+Suppose $U$ acts on a $d$-dimensional space.
+Then,
+we can find two-level unitary matrices $U_1, \ldots, U_{d-1}$ such that the matrix $U_{d-1}\cdots U_1 U$ has all zero in the first row and column except for the first element,
+which is equal to one.
+We then repeat this procedure for the $(d-1) \times (d-1)$ unitary submatrix in the lowe right hand corner,
+and so on,
+with the end result that an arbitrary $d \times d$ unitary matrix can be decomposed as
+\[
+    U = V_1 V_2 \cdots V_k
+\]
+where the matrices $V_i$ are two-level unitary matrices,
+and $k \le (d-1) + (d-1) + \cdots + 1 = d(d-1)/2$.
+
+A corollary of the above is that an arbitrary unitary matrix on an $n$ qubit system may be written as a product of at most $2^{n-1}(2^n-1)$ two-level unitary matrices.
+
+\subsection{Single qubit and CNOT gates are universal}
+An arbitrary unitary operator may be expressed \emph{exactly} using single qubit and CNOT gates.
+This follows from the fact that any two-level unitary matrix can be implemented using single qubit and CNOT gates.
+
+Suppose we have two distinct binary numbers $s$ and $t$ of length $n$.
+A \emph{Gray code} connecting $s$ and $t$ is a sequence of binary numbers,
+starting with $s$ and ending with $t$,
+such that adjacent members of the list differ in exactly one bit.\graffito{
+A Gray code connecting $s=101001$ and $t=110011$ is
+\[
+    \begin{matrix}
+        1 & 0 & 1 & 0 & 0 & 1 \\
+        1 & 0 & 1 & 0 & 1 & 1 \\
+        1 & 0 & 0 & 0 & 1 & 1 \\
+        1 & 1 & 0 & 0 & 1 & 1 \\
+    \end{matrix}
+\] 
+}
+We can always find a Gray code such that $m \le n + 1$ since $s$ and $t$ differ in at most $n$ locations.
+
+Let $g_1, \ldots, g_m$ be the elements of a Gray code connecting $s$ and $t$,
+with $g_1 = s$ and $g_m = t$.
+The idea of a quantum circuit implementing U is to perform a sequence of gates effecting the state changes $\ket{g_1} \to \ket{g_2} \to \cdots \to \ket{g_m}$,
+then to perform a controlled-$\tilde{U}$ operation with the target qubit located at the single bit where $g_{m-1}$ and $g_m$ differ,
+and then to undo the first sequence of gates,
+transforming $\ket{g_{m-1}} \to \ket{g_{m-2}} \to \cdots \to \ket{g_1}$.
+ 
+The implementation of a two-level unitary operation $U$ requires at most $2(n-1)$ controlled operations to swap $\ket{g_1}$ with $\ket{g_{m-1}}$ and back again.
+Each of these controlled operations can be implemented using $O(n)$ single qubit and CNOT gates.
+The controlled $\tilde{U}$ gate also requires $O(n)$ gates.
+Thus, implementing $U$ requires $O(n^2)$ single qubit and CNOT gates.
+An arbitrary unitary operation on $n$ qubits can be implemented using $O(n^24^n)$ single qubit and CNOT gates.
+
+\subsection{A discrete set of universal operations}
+A discrete set of gates can't be used to implement an arbitrary unitary operation exactly,
+since the set of unitary operations is continuous.
+However, a discrete set can be used to \emph{approximate} any unitary operation.
+
+Let $U$ be the target unitary operation to be implemented, and let $V$ be the unitary operation that is actually implemented.
+The \emph{error} of the implementation is defined as
+\[
+    E(U, V) = \max_{\ket{\psi}} \norm{(U - V)\ket{\psi}},
+\]
+where the $\max$ is taken over all normalized quantum states $\ket{\psi}$ in the state space.
+If $E(U, V)$ is small, any measurement performed on the state $V\ket{\psi}$ will yield approximately the same measurement statistics as measurements of $U\ket{\psi}$.
+
+If $M$ is a POVM element in an arbitrary POVM,
+and $P_U$ and $P_V$ are the probabilities of obtaining the measurement outcome corresponding to $M$ when measuring $U\ket{\psi}$ and $V\ket{\psi}$ respectively,
+then
+\[
+    \abs{P_U - P_V} \leq 2E(U, V).
+\]
+Therefore, if $E(U, V)$ is small,
+then measurement outcomes occur with similar probabilities regardless of whether $U$ or $V$ is performed.
+
+If we perform a sequence of gates $V_1, \ldots, V_m$ to implement some other sequence of gates $U_1, \ldots, U_m$,
+then the error of the implementation is bounded by
+\[
+    E(U_m\cdots U_1, V_m\cdots V_1) \leq \sum_{j=1}^m E(U_j, V_j).
+\]
+The errors add at most linearly with the number of gates in the sequence.
+
+We can consider different set of gates that are universal for quantum computation:
+the \emph{standard set} of universal gates consists of the Hadamard gate, the thphase gate, the controlled-NOT gate, and the $\pi/8$ gate,
+while another set of universal gates consists of the Hadamard gate, the phase gate, the controlled-NOT gate, and the Toffoli gate.
+
+The Hadamard and $\pi/8$ gates can be used to approximate any single qubit unitary operation to arbitrary accuracy.
+This is because $T$ (a rotation by $\pi/4$ radians about the $\hat{z}$ axis on the Block sphere)
+and $HTH$ (a rotation by $\pi/4$ radians about the $\hat{x}$ axis on the Bloch sphere)
+can be used to construct a rotation $R_{\hat{n}}(\theta)$,
+and a repeated application of $R_{\hat{n}}(\theta)$ can be used to approximate a rotation by any angle.
+Since
+\[
+    E\left(U, R_{\hat{n}}^{n_1}(\theta)HR_{\hat{n}}^{n_2}(\theta)HR_{\hat{n}}^{n_3}(\theta)\right) < \epsilon,
+\]
+given any single qubit unitary operator $U$ and any $\epsilon > 0$,
+it is possible to approximate $U$ to accuracy $\epsilon$ using a circuit composed of Hadamard and $\pi/8$ gates.
+
+Given a quantum circuit containing $m$ gates, either CNOTs or single qubit unitary gates,
+we may approximate it using Hadamard, controlled-NOT, and $\pi/8$ gates
+(the phase gate allows to make the approximation fault-tolerant).
+To achieve an overall error of $\epsilon$,
+we need to approximate each gate in the circuit to an accuracy of $\epsilon/m$.
+Approximating the $m$ gate circuit requires $\Omega(m2^{m/\epsilon})$ gates.
+A much better rate of convergence can be achieved using the \emph{Solovay-Kitaev theorem},
+which implies that an arbitrary single qubit gate may be approximated to an accuracy $\epsilon$ using $O(\log^c(1/\epsilon))$ gates from a discrete universal set of gates,
+where $c \approx 2$.
+
+The Hadamard, phase, controlled-NOT, and $\pi/8$ gates are universal for (fault-tolerant) quantum computation;
+given a circuit containing CNOTs and single qubit unitary gates,
+it is possible to simulate the circuit to good accuracy,
+and the simulation can be performed efficiently (polynomial in $\log(m/\epsilon)$).
+
+\subsection{Approximating arbitrary unitary gates is generically hard}
+Given a unitary transformation $U$ on $n$ qubits, there is not always a circuit of size polynomial in $n$ approximating $U$.
+There are unitary operations requiring exponentially many operations.
+
+\section{Summary of the quantum circuit model of computation}
+The following are the key elements of the quantum circuit model of computation:
+\begin{description}
+    \item[Classical resources] A quantum computer consists on a classical part and a quantum part.
+        In principle, there is no need for the classical part of the computer,
+        but in practice certain tasks may be made much easier if parts of the computation can be done classically.
+    \item[A syuitable state space] A quantum circuit operates on some number $n$ of qubits.
+        The state space is thus a $2^n$-dimensional Hilbert space.
+        Product states of the form $\ket{c_1, \ldots, c_n}$ are called \emph{computational basis states} of the computer.
+    \item[Ability to prepare statees in the computational basis] It is assumed that any computational basis state $\ket{x_1, \ldots, x_n}$ can be prepared in at most $n$ steps.
+    \item[Ability to perform quantum gates] Gates can be applied to any subset of qubits as desired,
+        and a universal family of gates can be implemented.
+        The Hadamard, phase, controlled-NOT, and $\pi/8$ gates form a family of gates from which any unitary operation can be approximated.
+    \item[Ability to perform measurements in the computational basis] Measurements may be performed in the computational basis of one or more of the qubits in the computer.
+\end{description}
+
+The ``quantum Turing machine'',
+a quantum generalization of the classical Turing machine model,
+has been shown to be equivalent to the quantum circuit model of computation.
+
+\section{Simulation of quantum systems}
+One of the most important practical applications of computation is the simulation of physical systems.
+
+\subsection{Simulation in action}
+Simulation of quantum systems by classical computers is possible, but generally inefficient.
+The dynamical behavior of a quantum system is described by the time-dependent Schrödinger equation,
+\[
+    i\hbar \frac{d}{dt}\ket{\psi(t)} = H\ket{\psi(t)}.
+\]
+Using the position representation $\psi(x, y) = \braket{x| \psi(t)}$, the Schrödinger equation can be written as
+\[
+    i\hbar \frac{\partial}{\partial t}\psi(x, t) = \left(-\frac{1}{2m}\frac{\partial^2}{\partial x^2} + V(x)\right)\psi(x, t).
+\]
+
+The key challenge in quantum systems is the exponential number of differential equations which must be solved.
+For $n$ qubits evolving according to the Schrödinger equation, there are $2^n$ coupled differential equations to solve.
+
+Quantum computers can efficiently simulate quantum systems for which there is no known efficient classical algorithm.
+
+\subsection{The quantum simulation algorithm}
+The formal solution to the time-dependent Schrödinger equation is given by
+\[
+    \ket{\psi(t)} = e^{-iHt/\hbar}\ket{\psi(0)}.
+\]
+In principle, $H$ is extremely difficult to exponentiate,
+and a first-order approximation $e^{-iHt/\hbar} \approx I - iHt/\hbar$ is generally not satisfactory.
+
+In practice, many Hamiltonians (Hubbard model, Ising model, \dots) can be written as a sum of (local) terms:
+\[
+    H = \sum_{k=1}^L H_k.
+\]
+While $e^{-iHt/\hbar}$ is difficult to compute, $e^{-iH_k t/\hbar}$ acts on a much smaller subsystem,
+and is straightforward to approximate using a quantum circuit.
+However, in general, $[H, H_k] \neq 0$, and thus $e^{-iHt/\hbar} \neq \prod_{k=1}^L e^{-iH_k t/\hbar}$.
+
+\begin{theorem}[Trotter formula]
+    Let $A$ and $B$ be Hermitian operators.
+    Then, for any $t$,
+    \[
+        \lim_{n \to \infty} \left(e^{-iAt/n}e^{-iBt/n}\right)^n = e^{-i(A+B)t}.
+    \]
+\end{theorem}
+The Trotter formula is true even if $A$ and $B$ do not commute.
+
+The \emph{Baker-Campbell-Hausdorff formula} tells us that
+\[
+    e^{(A+B)\Delta t} = e^{A\Delta t}e^{B\Delta t}e^{-\frac{1}{2}[A, B]\Delta t^2} + O(\Delta t^2).
+\]
+
+\begin{algorithm}
+    \caption{Quantum simulation}
+    \begin{algorithmic}[1]
+        \Require
+        A Hamiltonian $H = \sum_{k=1}^L H_k$ acting on an $N$-dimensional system,
+        where each $H_k$ acts on a small subsystem of the size independent of $N$.
+        
+        \Require 
+        An initial state $\ket{\psi_0}$ of the system at time $t=0$.
+        
+        \Require
+        A positive non-zero accuracy $\delta$.
+        
+        \Require
+        A time $t_f$ at which te evolved system is desired.
+
+        \Ensure
+        A state $\ket{\tilde{\psi}(t_f)}$ such that $\abs{\ket{\tilde{\psi}(t_f)} - e^{-iHt_f}\ket{\psi_0}}^2 \ge 1 - \delta$.
+
+        \Statex
+        \textbf{Runtime:} $O(\text{poly}(1/\delta))$ operations.
+
+        \Statex
+        \textbf{Procedure:} Choose a representation such that the state $\ket{\tilde{\psi}}$ of $n=\text{poly}(\log N)$ qubits approximates the system and the operators $e^{-iH_k t}$ can be implemented efficiently on a quantum computer.
+        Select an approximation method and $\Delta t$ such that the expected error is acceptable (and $j\Delta t =t_f$ for some integer $j$),
+        construct the corresponding quantum circuit $U_{\Delta_t}$ for the iterative step and do:
+
+        \State 
+        $\ket{\tilde{\psi}_0} \gets \ket{\psi_0}$; $j=0$ \Comment{Initialize state}
+
+        \State 
+        $\to \ket{\tilde{\psi}_{j+1}} \gets U_{\Delta t}\ket{\tilde{\psi}_j}$ \Comment{Iterative update}
+
+        \State
+        $\to j = j + 1$; goto 2 until $j\Delta t\ge t_f$ \Comment{Loop}
+
+        \State
+        $ \to \ket{\tilde{\psi}(t_f)} = \ket{\tilde{\psi}_j}$ \Comment{Final result}
+    \end{algorithmic}
+\end{algorithm}
+
+\subsection{An illustrative example}
+Quantum simulations are possible even for Hamiltonians which act non-trivially on all or nearly all parts of a large system.
+Suppose
+\[
+    H = Z_1 \otimes Z_2 \otimes \cdots \otimes Z_n,
+\]
+which acts on an $n$-qubit system.
+What we need is a quantum circuit which implements $e^{-iHt/\hbar}$ for arbitrary values of $t$.
