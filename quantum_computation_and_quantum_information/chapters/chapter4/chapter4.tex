@@ -113,7 +113,7 @@ The following circuit identities are useful for simplifying quantum circuits:
     HXH=Z, \quad HYH=-Y, \quad HZH=X.
 \]
 
-\subsection{Controlled operations}
+\section{Controlled operations}
 The prototypical controlled operation is the controlled-NOT (CNOT) gate.
 The two inputs of the CNOT gate are the \emph{control qubit} and the \emph{target qubit}.
 In the computational basis, the action of the CNOT gate is given by $\ket{c, t} \to \ket{c, t \oplus c}$.
@@ -240,3 +240,46 @@ The Toffoli gate can be implemented using only these gates as follows:
         & \gate{H} & \targ & \gate{T^\dagger} & \targ & \gate{T} & \targ & \gate{T^\dagger} & \targ & \gate{T} & \gate{H} & \qw & \qw & \qw & \qw \\
     }
 \]
+
+$C^n(U)$ can be implemented using $n-1$ working qubits (in addition to the $n$ control qubits and the target qubit),
+which all start and end in the $\ket{0}$ state.
+Suppose that control qubits are in the computational basis state $\ket{c_1,\ldots, c_n}$.
+The first stage of the circuit is to reversibily AND all the control qubits together to produce $c_1\cdot \ldots \cdot c_n$ in the first working qubit,
+by applying Toffoly gates, until the final working qubit is in the state $\ket{c_1\cdot \ldots \cdot c_n}$.
+Next, the $U$ operation on the target qubit is applied,
+conditional on the final working qubit being set to one.
+Finally, the last part of the circuit reverses the steps of the first stage,
+to return all the working qubits to the $\ket{0}$ state.
+The combined result is to apply $U$ to the target qubit,
+if and only if all the control bits $c_1,\ldots, c_n$ are set to one.
+
+For $n = 5$, the circuit is as follows:
+\[
+    \Qcircuit @C=1em @R=2em {
+        \lstick{\ket{c_1}} & \ctrl{5} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw \\
+        \lstick{\ket{c_2}} & \ctrl{4} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{4} & \qw \\
+        \lstick{\ket{c_3}} & \qw & \ctrl{4} & \qw & \qw & \qw & \qw & \qw & \ctrl{4} & \qw & \qw \\
+        \lstick{\ket{c_4}} & \qw & \qw & \ctrl{4} & \qw & \qw & \qw & \ctrl{4} & \qw & \qw & \qw \\
+        \lstick{\ket{c_5}} & \qw & \qw & \qw & \ctrl{4} & \qw & \ctrl{4} & \qw & \qw & \qw & \qw \\
+        \lstick{\ket{0}} & \targ & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \ctrl{1} & \targ & \qw \\
+        \lstick{\ket{0}} & \qw & \targ & \ctrl{1} & \qw & \qw & \qw & \ctrl{1} & \targ & \qw & \qw \\
+        \lstick{\ket{0}} & \qw & \qw & \targ & \ctrl{1} & \qw & \ctrl{1} & \targ & \qw & \qw & \qw \\
+        \lstick{\ket{0}} & \qw & \qw & \qw & \targ & \ctrl{1} & \targ & \qw & \qw & \qw & \qw \\
+        \lstick{\ket{t}} & \qw & \qw & \qw & \qw & \gate{U} & \qw & \qw & \qw & \qw & \qw \\
+    }
+\]
+
+An open circle notation indicate conditioning on the qubit set to zero, while a closed circle indicates conditioning on the qubit being set to one.
+\[
+    \Qcircuit @C=1em @R=2em {
+        & \ctrlo{1} & \qw \\
+        & \targ & \qw \\
+    }
+    =
+    \Qcircuit @C=1em @R=2em {
+        & \gate{X} & \ctrl{1} & \gate{X} & \qw \\
+        & \qw & \targ & \qw & \qw \\
+    }
+\]
+
+\section{Measurement}
