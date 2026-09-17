@@ -574,4 +574,39 @@ Suppose
     H = Z_1 \otimes Z_2 \otimes \cdots \otimes Z_n,
 \]
 which acts on an $n$-qubit system.
-What we need is a quantum circuit which implements $e^{-iHt/\hbar}$ for arbitrary values of $t$.
+What we need is a quantum circuit which implements $e^{-iH\Delta t/\hbar}$.
+
+Although the Hamiltonian $H$ involves all the qubits in the system,
+it does so in a classical manner:
+the phase shift applied to the system is $e^{-i\Delta t/\hbar}$ if the \emph{parity} of the $n$ qubits is even;
+otherwise the phase shift is $e^{i\Delta t/\hbar}$.
+It is possible to simulate $H$  by first computing the parity and storing the result in an ancilla qubit,
+then applying the appropriate phase shift conditioned on the parity,
+then uncomputing the parity (erase the ancilla qubit).
+
+For $n=3$ we can use the following circuit:
+\[
+    \Qcircuit @C=1em @R=2em {
+        \lstick{} & \ctrl{3} & \qw & \qw & \qw & \qw & \qw & \ctrl{3} & \qw \\
+        \lstick{} & \qw & \ctrl{2} & \qw & \qw & \qw & \ctrl{2} & \qw & \qw \\
+        \lstick{} & \qw & \qw & \ctrl{1} & \qw & \ctrl{1} & \qw & \qw & \qw \\
+       \lstick{\ket{0}} & \targ & \targ & \targ & \gate{e^{-iZ\Delta t/\hbar}} & \targ & \targ & \targ & \rstick{\ket{0}}\qw \\
+    }
+\]
+
+Extending the same procedure, we can efficiently simulate any Hamiltonian of the form
+\[
+    H = \bigotimes_{k=1}^n \sigma^k_{c(k)},
+\]
+where $\sigma^k_{c(k)}$ is a Pauli matrix (or the identity matrix) acting on the $k$-th qubit,
+and $c(k) \in \{0, 1, 2, 3\}$ specifies which Pauli matrix is used ($I$, $X$, $Y$, or $Z$).
+The qubits upon which the identity operates can be ignored,
+and the $X$ and $Y$ operations can be transformed by single qubit gates to $Z$ operations.
+
+It is possible to simulate any Hamiltonian of the form
+\[
+    H = \sum_{k=1}^L H_k,
+\]
+where the only restriction is that the individual terms $H_k$ have a tensor product structure,
+and than L is polynomial in the number of qubits $n$.
+More generally, all that is required is that the individual terms $H_k$ can be efficiently simulated on a quantum computer.
